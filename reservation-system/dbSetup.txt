@@ -1,0 +1,16 @@
+Database Mockup:
+________________
+
+Users:
+    Name (String)
+    Email (String)
+    Computer_ID (Number)
+    Password (String)
+
+Computers:
+    Computer_ID (Number)
+    Availability (bool)
+    Checkout_time (DateTime)
+    Reservation_End_time (DateTime + selection)
+
+
