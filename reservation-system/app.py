@@ -12,13 +12,77 @@ db = SQLAlchemy(app)
 
 
 # Import any SQLAlchemy model classes you wish.
-#from models import FIXME
+from models import Users, Computers
 
+# validate login information/request
+def validLogin(rf):
+    valid=False
+    #if username or password doesnt exist in the request form, fail
+    if not rf['username'] or not rf['password']:
+        return False
+    #check username and password in database
+    p = Users.query.filter(Users.username == rf['username']).first()
+    if p is not None:
+        if p.password == rf['password']:
+            return True
+    else:
+        return False
+
+#makes sure all fields have been filled out
+def validCreateAccount(rf):
+    if not rf['username'] or not rf['password']:
+        return False
+    return True
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+@app.route('/signup/', methods=['POST'])
+def signUp():
+    #send new user data to the database
+    #send them to homepage
+    #take data from the request form, add it to database and commit it
+    #should check if username is already taken? 
+    if not validCreateAccount(request.form):
+        session['createAccountMessage']='One or more fields contain missing or invalid information.'
+        return redirect(url_for('login'))
+    #check if the user already exists in the database
+    username = request.form['username'].strip().lower()
+    if Users.query.filter(Users.username==username).first() is not None:
+        session['createAccountMessage'] = 'Sorry, that username is already taken'
+        return redirect(url_for('login'))
+    #check that the profile picture file is actually an image
+    else:
+        #getting data to add to the user profile database
+        password = request.form['password'].strip()
+        #creating unique profile picture name for the picture they gave us
+        #add data to this user
+        newUser = Users(username=username, password=password, computer_ID = 0, email=request.form['email'])
+        db.session.add(newUser)
+        db.session.commit()
+        session['username'] = request.form['username']
+        return render_template('app.html', username=session['username'])
 
+@app.route('/login/', methods=['POST'])
+def login():
+    print('hello')
+    if validCreatAccount(rf) and validLogin(rf):
+        print('hey')
+        #true, they are authenticated
+    else:
+        print('hey')
+        #else, invalid login
+        
+	 
+
+@app.route('/reserve/')
+def reserve():
+    return 0
+
+@app.route('/deleteReservation/')
+def deleteReservation():
+    return 0
+	
 if __name__ == '__main__':
-    app.run()
+	app.run()
