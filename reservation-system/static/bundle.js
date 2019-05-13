@@ -229,8 +229,6 @@ eval("var g;\n\n// This works in non-strict mode\ng = (function() {\n\treturn th
 
 /***/ }),
 
-<<<<<<< HEAD
-=======
 /***/ "./src/index.css":
 /*!***********************!*\
   !*** ./src/index.css ***!
@@ -242,7 +240,6 @@ eval("\n\n//# sourceURL=webpack:///./src/index.css?");
 
 /***/ }),
 
->>>>>>> d20c44f97f6e697a056f2faaabd210edf7f6db04
 /***/ "./src/index.jsx":
 /*!***********************!*\
   !*** ./src/index.jsx ***!
@@ -251,11 +248,7 @@ eval("\n\n//# sourceURL=webpack:///./src/index.css?");
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-<<<<<<< HEAD
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n\n\n\nclass Test extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {\n  render() {\n    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"div\", null, \"Hello, Flask React.\");\n  }\n\n}\n\nreact_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Test, null), document.getElementById('content'));\n\n//# sourceURL=webpack:///./src/index.jsx?");
-=======
 eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\n/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./index.css */ \"./src/index.css\");\n/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_index_css__WEBPACK_IMPORTED_MODULE_2__);\n\n\n\n\nclass Login extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      tempuser: null,\n      temppass: null,\n      username: null,\n      password: null\n    };\n  } //This isn't usable right now but could be useful in the future.\n\n\n  login() {\n    this.setState({\n      username: this.state.tempuser,\n      password: this.state.temppass\n    });\n  } //This isn't usable right now but could be useful int he future.\n\n\n  logout() {\n    this.setState({\n      username: null,\n      password: null\n    });\n  }\n\n  render() {\n    let loginElms = [];\n    let buttons = [];\n\n    if (this.state.username === null) {\n      loginElms.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"input\", {\n        type: \"text\",\n        className: \"username\",\n        placeholder: \"username\",\n        id: \"user\",\n        onChange: e => this.setState({\n          tempuser: e.target.value\n        })\n      }));\n      loginElms.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"input\", {\n        type: \"text\",\n        className: \"password\",\n        placeholder: \"password\",\n        id: \"pass\",\n        onChange: e => this.setState({\n          temppass: e.target.value\n        })\n      }));\n      buttons.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"input\", {\n        type: \"button\",\n        value: \"Login\",\n        onClick: e => this.setState({\n          username: this.state.tempuser,\n          password: this.state.temppass\n        })\n      }));\n    } else {\n      loginElms.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"p\", null, this.state.username));\n      buttons.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"input\", {\n        type: \"button\",\n        value: \"Logout\",\n        onClick: e => this.setState({\n          username: null,\n          password: null\n        })\n      }));\n    }\n\n    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"div\", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"div\", {\n      className: \"homepage\"\n    }, loginElms, buttons));\n  }\n\n}\n\nreact_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Login, null), document.getElementById(\"homepage\"));\n\n//# sourceURL=webpack:///./src/index.jsx?");
->>>>>>> d20c44f97f6e697a056f2faaabd210edf7f6db04
 
 /***/ }),
 
