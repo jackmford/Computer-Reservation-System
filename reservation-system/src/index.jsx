@@ -33,8 +33,8 @@ class Login extends React.Component {
       let loginElms = [];
       let buttons = [];      
       if(this.state.username === null){
-        loginElms.push(<input type="text" className="username" placeholder="username" id="user" onChange={e => this.setState({ tempuser: e.target.value })}  />);
-        loginElms.push(<input type="text" className="password" placeholder="password" id="pass"onChange={e => this.setState({ temppass: e.target.value })} />);
+        loginElms.push(<input type="text" className="username" placeholder="username" id="user" name="username" onChange={e => this.setState({ tempuser: e.target.value })}  />);
+        loginElms.push(<input type="text" className="password" placeholder="password" id="pass" name="password" onChange={e => this.setState({ temppass: e.target.value })} />);
         buttons.push(<input type="button" value="Login" onClick={e => this.setState({ username: this.state.tempuser, password: this.state.temppass})} />);
       } else {
         loginElms.push(<p>{this.state.username}</p>);
@@ -44,8 +44,12 @@ class Login extends React.Component {
         return (
             <div>
               <div className="homepage">
-                {loginElms}
-                {buttons}
+    						<form method="post" action="{{ url_for('login') }}"> 
+        					<div className="form-group">
+                		{loginElms}
+                		{buttons}
+									</div>
+								</form>
               </div>
             </div>
         );
