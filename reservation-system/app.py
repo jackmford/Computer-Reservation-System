@@ -66,8 +66,9 @@ def signUp():
 
 @app.route('/login/', methods=['POST'])
 def login():
+    rf = request.form
     print('hello')
-    if validCreatAccount(rf) and validLogin(rf):
+    if validCreateAccount(rf) and validLogin(rf):
         print('hey')
         #true, they are authenticated
     else:
