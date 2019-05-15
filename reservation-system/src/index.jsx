@@ -2,6 +2,40 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+class ComputerReservation extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {
+		computer: super.chosenComputer,
+		times = [],
+		};
+    }
+    
+    render(){
+		return(
+
+		);
+    }
+
+}
+
+class ComputerView extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {
+		user: super.username,
+		computers = [],
+		chosenComputer: null,
+		};
+    }
+
+    render(){
+		return(
+
+		);
+    }
+}
+
 class Login extends React.Component {
     constructor(props){
       super(props);
