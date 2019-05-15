@@ -30,6 +30,7 @@ def validLogin(rf):
     else:
         return False
 
+
 #TODO
 #makes sure all fields have been filled out
 def validCreateAccount(rf):
