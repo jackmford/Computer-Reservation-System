@@ -45,7 +45,7 @@ def index():
     return render_template('index.html')
 
 #TODO
-@app.route('/signup/', methods=['POST'])
+@app.route('/api/signup/', methods=['POST'])
 def signUp():
     #send new user data to the database
     #send them to homepage
@@ -71,7 +71,7 @@ def signUp():
         session['username'] = request.form['username']
         return render_template('app.html', username=session['username'])
 
-@app.route('/login/', methods=['POST'])
+@app.route('/api/login/', methods=['POST'])
 def login():
     try:
         if validLogin(request.form):
