@@ -15,6 +15,27 @@ class Login extends React.Component {
 
     //This isn't usable right now but could be useful in the future.
     login(){
+			var formData = new FormData(document.querySelector('#login-form'));
+			window.fetch('/api/login',{
+				method: 'POST',
+				body: formData,
+})
+			.then(result => result.text())
+			.then(
+				(result) => {
+					if (result === 'ok'){
+						this.props.onLogin();
+				}
+					else {
+						alert('Not authenticated.');
+				}
+			},
+				(error) => {
+					alert('General login error.');
+				},
+	
+			);
+
       this.setState({
         username: this.state.tempuser,
         password: this.state.temppass,
@@ -33,23 +54,27 @@ class Login extends React.Component {
       let loginElms = [];
       let buttons = [];      
       if(this.state.username === null){
-        loginElms.push(<input type="text" className="username" placeholder="username" id="user" onChange={e => this.setState({ tempuser: e.target.value })}  />);
-        loginElms.push(<input type="text" className="password" placeholder="password" id="pass"onChange={e => this.setState({ temppass: e.target.value })} />);
-        buttons.push(<input type="button" value="Login" onClick={e => this.setState({ username: this.state.tempuser, password: this.state.temppass})} />);
+				loginElms.push(<form id = "login-form">)
+        loginElms.push(<input type="text" className="username" placeholder="username" name="user"  onChange={e => this.setState({ tempuser: e.target.value })}  />);
+        loginElms.push(<input type="text" className="password" placeholder="password" name="pass" onChange={e => this.setState({ temppass: e.target.value })} />);
+        buttons.push(<button type="submit" value="Login" onClick={e => evt.preventDefault(); this.login(); this.setState({ username: this.state.tempuser, password: this.state.temppass})} />);
+        buttons.push(<button type="submit" value="Sign Up!" onClick={e => evt.preventDefault(); this.signUp(); />);
+				loginElms.push(</form>)
       } else {
-        loginElms.push(<p>{this.state.username}</p>);
-        buttons.push(<input type="button" value="Logout" onClick={e => this.setState({ username: null, password: null})}  />);
+				loginElms.push(<p>{this.state.username}</p>);
+        buttons.push(<button type="submit" value="Logout" onClick={e => this.setState({ username: null, password: null})} />);
       }
 
         return (
-            <div>
-              <div className="homepage">
-                {loginElms}
-                {buttons}
-              </div>
-            </div>
+					<div>
+						<div className="homepage">
+							{loginElms}
+							{buttons}
+						</div>
+					</div>
         );
     }
 }
+
 
 ReactDOM.render( <Login />, document.getElementById( "homepage" ) );
