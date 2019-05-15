@@ -14,30 +14,37 @@ db = SQLAlchemy(app)
 # Import any SQLAlchemy model classes you wish.
 from models import Users, Computers
 
+
+"""
+VALIDATORS
+"""
 # validate login information/request
 def validLogin(rf):
-    valid=False
     #if username or password doesnt exist in the request form, fail
-    if not rf['username'] or not rf['password']:
+    if not rf['user'] or not rf['pass']:
         return False
     #check username and password in database
-    p = Users.query.filter(Users.username == rf['username']).first()
-    if p is not None:
-        if p.password == rf['password']:
-            return True
+    p = Users.query.filter(Users.username == rf['user']).first()
+    if p is not None and p.password == rf['pass']:
+        return True
     else:
         return False
 
+#TODO
 #makes sure all fields have been filled out
 def validCreateAccount(rf):
     if not rf['username'] or not rf['password']:
         return False
     return True
 
+
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
+#TODO
 @app.route('/signup/', methods=['POST'])
 def signUp():
     #send new user data to the database
@@ -66,13 +73,19 @@ def signUp():
 
 @app.route('/login/', methods=['POST'])
 def login():
-    print('hello')
-    if validCreatAccount(rf) and validLogin(rf):
-        print('hey')
-        #true, they are authenticated
-    else:
-        print('hey')
-        #else, invalid login
+    try:
+        if validLogin(request.form):
+            #they are authenticated
+            session['user']=request.form['user']
+            return 'ok'
+        else:
+            #invalid login
+            return 'fail'
+    except Exception as e:
+        print("Error with client logging in:")
+        print("----------------")
+        print(e)
+        print("----------------")
         
 	 
 
