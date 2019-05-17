@@ -85,12 +85,17 @@ def login():
         print("----------------")
         
 	 
+@app.route('/api/computerInfo/', methods=['POST'])
+def info():
+    computers = Computers.query.filter().all()
+    return jsonify(computers)
+    
 
-@app.route('/reserve/')
+@app.route('/api/reserve/')
 def reserve():
     return 0
 
-@app.route('/deleteReservation/')
+@app.route('/api/deleteReservation/')
 def deleteReservation():
     return 0
 	
