@@ -7,13 +7,14 @@ class ComputerReservation extends React.Component{
       super(props);
       this.state = {
 		computer: super.chosenComputer,
-		times = [],
+		times: [],
 		};
     }
     
     render(){
 		return(
-
+		  <div className="homepage">
+		  </div>
 		);
     }
 
@@ -24,16 +25,26 @@ class ComputerView extends React.Component{
       super(props);
       this.state = {
 		user: super.username,
-		computers = window.fetch('/api/computerInfo',{
+		computers: window.fetch('/api/computerInfo',{
 				method: 'POST',
-		}).then(result => result.text());
+		}).then(result => result.text())
+		  .then(
+				(result) => {
+					this.props.onLogin();
+			},
+				(error) => {
+					alert('General login error.');
+				},
+	
+			),
+
 		chosenComputer: null,
 		};
     }
 
     render(){
 		let pcs = [];
-		for each (var computer in this.state.computers){
+		for (var computer in this.state.computers){
 		  console.log(computer);
 		  //pcs.push(<div className="computer">
 				   //<p>{computer.id}</p><br />
