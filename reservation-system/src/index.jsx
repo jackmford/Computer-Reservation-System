@@ -84,23 +84,22 @@ class Login extends React.Component {
 			let signUpElms = [];
 			let signUpButton = [];
 				loginElms.push(<form id = "login-form">
-        		<input type="text" className="username" placeholder="username" name="user"onChange={e => this.setState({ tempuser: e.target.value })} />
+        		<input type="text" className="username" placeholder="username" name="user" onChange={e => this.setState({ tempuser: e.target.value })} />
         		<input type="text" className="password" placeholder="password" name="pass"onChange={e => this.setState({ temppass: e.target.value })} />
-       			<input type="text" className="email" placeholder="email" name="email"onChange={e => this.setState({ temppass: e.target.value })} />
 						</form>);
 
-        signInButton.push(<button type="submit" value="Login" onClick={(e) =>{ e.preventDefault(); this.login(); }}/>);
+        signInButton.push(<button type="submit" value="Login" onClick={(e) =>{ e.preventDefault(); this.login(); }}>Sign In! </button>);
 
 				signUpElms.push(
 				<div>
-    		<a href="#signup" data-toggle="collapse"><h2>Sign Up</h2></a>
+    		<a href="#signup" data-toggle="collapse"><h6>Sign Up</h6></a>
     		<div id="signup" className="collapse">
 				<form id = "signup-form">
         <input type="text" className="username" placeholder="username" name="user"onChange={e => this.setState({ tempuser: e.target.value })} />
         <input type="text" className="password" placeholder="password" name="pass" onChange={e => this.setState({ temppass: e.target.value })} />
         <input type="text" className="email" placeholder="email" name="email" onChange={e => this.setState({ temppass: e.target.value })} />
 				</form>
-        <button type="submit" value="Sign Up!" onClick={(e) =>{ e.preventDefault(); this.signUp();}} />
+        <button type="submit" value="Sign Up!" onClick={(e) =>{ e.preventDefault(); this.signUp();}}>Sign Up! </button>
 				</div>
 				</div>);
 
