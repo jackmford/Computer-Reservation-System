@@ -29,11 +29,26 @@ def validLogin(rf):
     else:
         return False
 
-
+def validReserve(rf):
+    if not (rf['computer_ID'] and rf['checkout_time'] and rf['reservation_end_time']):
+        return False
+    comp = Computers.query.filter(Computers.computer_ID==rf['computer_ID']).first()
+    if comp.availability == 0:
+        #TODO if availability is false, check if the reservation end time has passed
+        return False
+    else:
+        return True
+"""
+ROUTES TO GO TO
+"""
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
+"""
+API ROUTES
+"""
 @app.route('/api/signup/', methods=['POST'])
 def signUp():
     #send new user data to the database
@@ -95,7 +110,22 @@ def info():
 
 @app.route('/api/reserve/')
 def reserve():
-    return 0
+    if not session['user'] or not validReserve(request.form):
+        return 'fail'
+    try:
+        username = session['user']
+        user = Users.query.filter(Users.username==username).first()
+        user.computer_ID = request.form[computer_ID]
+        #TODO
+        #change computer availability, checkout_time and reservation_end_time
+        #add and commit db changes
+        return 'ok'
+    except Exception as e:
+        print("Error with client reserving computer")
+        print("----------------")
+        print(e)
+        print("----------------")
+        return 'fail'
 
 @app.route('/api/deleteReservation/')
 def deleteReservation():
