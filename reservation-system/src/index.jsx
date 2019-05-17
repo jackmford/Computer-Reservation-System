@@ -24,7 +24,7 @@ class ComputerView extends React.Component{
       super(props);
       this.state = {
 		user: super.username,
-		computers = window.fetch('/api/computerinfo',{
+		computers = window.fetch('/api/computerInfo',{
 				method: 'POST',
 		}).then(result => result.text());
 		chosenComputer: null,
