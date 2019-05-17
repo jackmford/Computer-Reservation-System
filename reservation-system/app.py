@@ -129,7 +129,25 @@ def reserve():
 
 @app.route('/api/deleteReservation/')
 def deleteReservation():
-    return 0
+    try:
+        if not request.form['computer_ID']:
+            return 'fail'
+        user = Users.query.filter(Users.computer_ID==rf['computer_ID']).first()
+        comp = Computers.query.filter(Computers.computer_ID==rf['computer_ID']).first()
+        if (user is None) or (comp is None) or (user.username != session['user']):
+            return 'fail'
+        user.computer_ID = 0
+        comp.checkout_time = 0
+        comp.reservaion_end_time = 0
+        comp.availability = 1
+        db.session.commit()
+    except Exception as e:
+        print("Error with client removing reservation")
+        print("----------------")
+        print(e)
+        print("----------------")
+        return 'fail'
+
 	
 if __name__ == '__main__':
 	app.run()
