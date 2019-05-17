@@ -16,7 +16,7 @@ class Login extends React.Component {
     //This isn't usable right now but could be useful in the future.
     login(){
 			var formData = new FormData(document.querySelector('#login-form'));
-			window.fetch('/api/login',{
+			window.fetch('/api/login/',{
 				method: 'POST',
 				body: formData,
 			})
@@ -44,7 +44,7 @@ class Login extends React.Component {
 
 		signUp() {
 			var formData = new FormData(document.querySelector('#signup-form'));
-			window.fetch('/api/signup',{
+			window.fetch('/api/signup/',{
 				method: 'POST',
 				body: formData,
 			})
@@ -95,7 +95,7 @@ class Login extends React.Component {
 				<div>
     		<a href="#signup" data-toggle="collapse"><h2>Sign Up</h2></a>
     		<div id="signup" className="collapse">
-				<form id = "singup-form">
+				<form id = "signup-form">
         <input type="text" className="username" placeholder="username" name="user"onChange={e => this.setState({ tempuser: e.target.value })} />
         <input type="text" className="password" placeholder="password" name="pass" onChange={e => this.setState({ temppass: e.target.value })} />
         <input type="text" className="email" placeholder="email" name="email" onChange={e => this.setState({ temppass: e.target.value })} />
