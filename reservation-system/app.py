@@ -30,26 +30,17 @@ def validLogin(rf):
         return False
 
 
-#TODO
-#makes sure all fields have been filled out
-def validCreateAccount(rf):
-    if not rf['user'] or not rf['pass']:
-        return False
-    return True
-
-
-
-
 @app.route('/')
 def index():
     return render_template('index.html')
 
-#TODO
 @app.route('/api/signup/', methods=['POST'])
 def signUp():
     #send new user data to the database
     #take data from the request form, add it to database and commit it
     #should check if username is already taken? 
+    if not rf['user'] or not rf['pass']:
+        return 'fail'
 
     username = request.form['user'].strip().lower()
     if Users.query.filter(Users.username==username).first() is not None:
