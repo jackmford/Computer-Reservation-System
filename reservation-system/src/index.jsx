@@ -24,14 +24,27 @@ class ComputerView extends React.Component{
       super(props);
       this.state = {
 		user: super.username,
-		computers = [],
+		computers = window.fetch('/api/computerinfo',{
+				method: 'POST',
+		}).then(result => result.text());
 		chosenComputer: null,
 		};
     }
 
     render(){
+		let pcs = [];
+		for each (var computer in this.state.computers){
+		  console.log(computer);
+		  //pcs.push(<div className="computer">
+				   //<p>{computer.id}</p><br />
+				   //<p>{computer.
+		}
+		
+		
 		return(
-
+		  <div className="homepage">
+		    {pcs}
+		  </div>
 		);
     }
 }
