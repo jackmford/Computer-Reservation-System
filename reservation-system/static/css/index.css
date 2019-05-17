@@ -8,5 +8,12 @@ p, div {
 
 body {
 	background: url(img/cream_dust.png) repeat 0 0;
+	height: 100%;
 }
 
+button {
+	height: 25px;
+	width: 100px;
+	background-color: #4da6ff;
+	text-align: center;
+}
