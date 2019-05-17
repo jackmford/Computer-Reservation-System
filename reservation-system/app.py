@@ -74,6 +74,18 @@ def login():
         print("----------------")
         print(e)
         print("----------------")
+
+@app.route('/api/logout/', methods=['POST'])
+def logout():
+    try:
+        del session['user']
+        return 'ok'
+    except Exception as e:
+        print("Error with client logging out:")
+        print("----------------")
+        print(e)
+        print("----------------")
+        return 'fail'
 	 
 @app.route('/api/computerInfo/', methods=['POST'])
 def info():
