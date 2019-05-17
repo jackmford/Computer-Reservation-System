@@ -15,11 +15,60 @@ class Login extends React.Component {
 
     //This isn't usable right now but could be useful in the future.
     login(){
+			var formData = new FormData(document.querySelector('#login-form'));
+			window.fetch('/api/login',{
+				method: 'POST',
+				body: formData,
+			})
+			.then(result => result.text())
+			.then(
+				(result) => {
+					if (result === 'ok'){
+						this.props.onLogin();
+				}
+					else {
+						alert('Not authenticated.');
+				}
+			},
+				(error) => {
+					alert('General login error.');
+				},
+	
+			);
+
       this.setState({
         username: this.state.tempuser,
         password: this.state.temppass,
       });
     }
+
+		signUp() {
+			var formData = new FormData(document.querySelector('#signup-form'));
+			window.fetch('/api/signup',{
+				method: 'POST',
+				body: formData,
+			})
+			.then(result => result.text())
+			.then(
+				(result) => {
+					if (result === 'ok'){
+						this.props.onLogin();
+				}
+					else {
+						alert('Not authenticated.');
+				}
+			},
+				(error) => {
+					alert('General login error.');
+				},
+	
+			);
+      this.setState({
+        username: this.state.tempuser,
+        password: this.state.temppass,
+      });
+
+	}
 
     //This isn't usable right now but could be useful int he future.
     logout(){
@@ -31,29 +80,70 @@ class Login extends React.Component {
 
     render() {
       let loginElms = [];
-      let buttons = [];      
-      if(this.state.username === null){
-        loginElms.push(<input type="text" className="username" placeholder="username" id="user" name="username" onChange={e => this.setState({ tempuser: e.target.value })}  />);
-        loginElms.push(<input type="text" className="password" placeholder="password" id="pass" name="password" onChange={e => this.setState({ temppass: e.target.value })} />);
-        buttons.push(<input type="button" value="Login" onClick={e => this.setState({ username: this.state.tempuser, password: this.state.temppass})} />);
-      } else {
-        loginElms.push(<p>{this.state.username}</p>);
-        buttons.push(<input type="button" value="Logout" onClick={e => this.setState({ username: null, password: null})}  />);
-      }
+      let signInButton = [];      
+			let signUpElms = [];
+			let signUpButton = [];
+				loginElms.push(<form id = "login-form">
+        		<input type="text" className="username" placeholder="username" name="user"onChange={e => this.setState({ tempuser: e.target.value })} />
+        		<input type="text" className="password" placeholder="password" name="pass"onChange={e => this.setState({ temppass: e.target.value })} />
+       			<input type="text" className="email" placeholder="email" name="email"onChange={e => this.setState({ temppass: e.target.value })} />
+						</form>);
+
+        signInButton.push(<button type="submit" value="Login" onClick={(e) =>{ e.preventDefault(); this.login(); }}/>);
+
+				signUpElms.push(
+				<div>
+    		<a href="#signup" data-toggle="collapse"><h2>Sign Up</h2></a>
+    		<div id="signup" className="collapse">
+				<form id = "singup-form">
+        <input type="text" className="username" placeholder="username" name="user"onChange={e => this.setState({ tempuser: e.target.value })} />
+        <input type="text" className="password" placeholder="password" name="pass" onChange={e => this.setState({ temppass: e.target.value })} />
+        <input type="text" className="email" placeholder="email" name="email" onChange={e => this.setState({ temppass: e.target.value })} />
+				</form>
+        <button type="submit" value="Sign Up!" onClick={(e) =>{ e.preventDefault(); this.signUp();}} />
+				</div>
+				</div>);
+
 
         return (
-            <div>
-              <div className="homepage">
-    						<form method="post" action="{{ url_for('login') }}"> 
-        					<div className="form-group">
-                		{loginElms}
-                		{buttons}
-									</div>
-								</form>
-              </div>
-            </div>
+					<div>
+						<div className="homepage">
+							{loginElms}
+							{signInButton}
+							{signUpElms}
+						</div>
+					</div>
         );
     }
 }
 
-ReactDOM.render( <Login />, document.getElementById( "homepage" ) );
+
+class App extends React.Component {
+	constructor(props){
+		super(props);
+		this.state = {
+			view: 'login'
+		};
+	}
+	
+	onLogin() {
+		this.setState({
+			view: 'ComputerView'
+		});
+	}
+	
+	render() {
+		let component = (this.state.view === 'login')
+			? <Login onLogin={() => this.onLogin()} />
+			: <ComputerView />;
+		
+		return(
+			<div className="app">
+				{component}
+			</div>
+		);
+	}
+}
+
+
+ReactDOM.render( <App />, document.getElementById( "homepage" ) );

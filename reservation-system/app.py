@@ -87,7 +87,6 @@ def login():
         print("----------------")
         print(e)
         print("----------------")
-        
 	 
 
 @app.route('/reserve/')

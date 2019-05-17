@@ -6,4 +6,5 @@ requirements.txt
 __pycache__/*
 webpack.config.js
 node_modules/*
-
+reservation-system/venv/*
+reservation-system/static/bundle.js
