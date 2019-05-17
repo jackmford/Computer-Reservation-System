@@ -14,7 +14,6 @@ db = SQLAlchemy(app)
 # Import any SQLAlchemy model classes you wish.
 from models import Users, Computers
 
-
 """
 VALIDATORS
 """
@@ -34,7 +33,7 @@ def validLogin(rf):
 #TODO
 #makes sure all fields have been filled out
 def validCreateAccount(rf):
-    if not rf['username'] or not rf['password']:
+    if not rf['user'] or not rf['pass']:
         return False
     return True
 
@@ -49,28 +48,25 @@ def index():
 @app.route('/api/signup/', methods=['POST'])
 def signUp():
     #send new user data to the database
-    #send them to homepage
     #take data from the request form, add it to database and commit it
     #should check if username is already taken? 
-    if not validCreateAccount(request.form):
-        session['createAccountMessage']='One or more fields contain missing or invalid information.'
-        return redirect(url_for('login'))
-    #check if the user already exists in the database
-    username = request.form['username'].strip().lower()
+
+    username = request.form['user'].strip().lower()
     if Users.query.filter(Users.username==username).first() is not None:
-        session['createAccountMessage'] = 'Sorry, that username is already taken'
-        return redirect(url_for('login'))
-    #check that the profile picture file is actually an image
+        #username taken
+        return 'fail'
+				
     else:
         #getting data to add to the user profile database
-        password = request.form['password'].strip()
+        password = request.form['pass'].strip()
         #creating unique profile picture name for the picture they gave us
         #add data to this user
         newUser = Users(username=username, password=password, computer_ID = 0, email=request.form['email'])
         db.session.add(newUser)
         db.session.commit()
-        session['username'] = request.form['username']
-        return render_template('app.html', username=session['username'])
+        session['user'] = request.form['user']
+        return 'ok'
+
 
 @app.route('/api/login/', methods=['POST'])
 def login():
@@ -88,12 +84,17 @@ def login():
         print(e)
         print("----------------")
 	 
+@app.route('/api/computerInfo/', methods=['POST'])
+def info():
+    computers = Computers.query.filter().all()
+    return jsonify(computers)
+    
 
-@app.route('/reserve/')
+@app.route('/api/reserve/')
 def reserve():
     return 0
 
-@app.route('/deleteReservation/')
+@app.route('/api/deleteReservation/')
 def deleteReservation():
     return 0
 	
