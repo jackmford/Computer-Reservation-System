@@ -84,11 +84,15 @@ class Login extends React.Component {
 			let signUpElms = [];
 			let signUpButton = [];
 				loginElms.push(<form id = "login-form">
+						<img src="../static/img/transparent-computer-screen.png" alt="computerSreen" className="icon"></img>
+						<h3 id="title">HPVC Reservations</h3>
+						<br></br>
         		<input type="text" className="username" placeholder="username" name="user" onChange={e => this.setState({ tempuser: e.target.value })} />
-        		<input type="text" className="password" placeholder="password" name="pass"onChange={e => this.setState({ temppass: e.target.value })} />
+						<br></br>
+        		<input type="password" className="password" placeholder="password" name="pass"onChange={e => this.setState({ temppass: e.target.value })} />
 						</form>);
-
-        signInButton.push(<button type="submit" value="Login" onClick={(e) =>{ e.preventDefault(); this.login(); }}>Sign In! </button>);
+						<br></br>
+        signInButton.push(<button className="signButton" type="submit" value="Login" onClick={(e) =>{ e.preventDefault(); this.login(); }}>Sign In! </button>);
 
 				signUpElms.push(
 				<div>
@@ -96,10 +100,13 @@ class Login extends React.Component {
     		<div id="signup" className="collapse">
 				<form id = "signup-form">
         <input type="text" className="username" placeholder="username" name="user"onChange={e => this.setState({ tempuser: e.target.value })} />
-        <input type="text" className="password" placeholder="password" name="pass" onChange={e => this.setState({ temppass: e.target.value })} />
+				<br></br>
+        <input type="password" className="password" placeholder="password" name="pass" onChange={e => this.setState({ temppass: e.target.value })} />
+				<br></br>
         <input type="text" className="email" placeholder="email" name="email" onChange={e => this.setState({ temppass: e.target.value })} />
 				</form>
-        <button type="submit" value="Sign Up!" onClick={(e) =>{ e.preventDefault(); this.signUp();}}>Sign Up! </button>
+				<br></br>
+        <button className="signButton" type="submit" value="Sign Up!" onClick={(e) =>{ e.preventDefault(); this.signUp();}}>Sign Up! </button>
 				</div>
 				</div>);
 
