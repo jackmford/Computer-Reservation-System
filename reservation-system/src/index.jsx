@@ -25,36 +25,35 @@ class ComputerView extends React.Component{
       super(props);
       this.state = {
 		user: super.username,
-		computers: window.fetch('/api/computerInfo',{
-				method: 'POST',
-		}).then(result => result.text())
-		  .then(
-				(result) => {
-					this.props.onLogin();
-			},
-				(error) => {
-					alert('General login error.');
-				},
-	
-			),
-
+		computers: [],
 		chosenComputer: null,
 		};
+
+		window.fetch('/api/computerInfo/',{
+				method: 'POST',
+		}).then(response => response.json())
+		  .then(data => {
+		    console.log(data);
+		    this.setState({
+				computers: data,
+		    });
+		})
+		  .catch(error => alert('error'));
     }
 
     render(){
+		console.log(this.state.computers);
 		let pcs = [];
-		for (var computer in this.state.computers){
-		  console.log(computer);
-		  //pcs.push(<div className="computer">
-				   //<p>{computer.id}</p><br />
-				   //<p>{computer.
-		}
-		
-		
 		return(
-		  <div className="homepage">
-		    {pcs}
+		  <div className="computerview">
+		    {this.state.computers.map((computer, index) => (
+		      <div className="computer">
+			    <div>Computer Availability: {computer.availability}</div>
+		    	<div>Computer ID: {computer.computer_ID}</div>
+		    	<div>Computer Checkout Time: {computer.checkout_time}</div>
+		    	<div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+		      </div>
+            ))}
 		  </div>
 		);
     }

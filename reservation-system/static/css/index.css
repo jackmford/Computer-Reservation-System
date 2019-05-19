@@ -17,3 +17,23 @@ button {
 	background-color: #4da6ff;
 	text-align: center;
 }
+
+.computer{
+  height: 300px;
+  width: 300px;
+  border: 2px solid;
+  background: green;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-evenly;
+}
+
+.computerview{
+  
+  padding: 30px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
