@@ -33,7 +33,7 @@ def validReserve(rf):
     if not (rf['computer_ID'] and rf['checkout_time'] and rf['reservation_end_time']):
         return False
     comp = Computers.query.filter(Computers.computer_ID==rf['computer_ID']).first()
-    if comp.availability == 0:
+    if (comp is None) or comp.availability == 0:
         #TODO if availability is false, check if the reservation end time has passed
         return False
     else:
@@ -113,8 +113,13 @@ def reserve():
     if not session['user'] or not validReserve(request.form):
         return 'fail'
     try:
+        #grab the user from the db
         username = session['user']
         user = Users.query.filter(Users.username==username).first()
+
+        #check that the user doesn't already have a computer
+        if user.computer_ID != 0:
+            return 'fail'
         user.computer_ID = request.form[computer_ID]
         #TODO
         #change computer availability, checkout_time and reservation_end_time
@@ -133,7 +138,7 @@ def deleteReservation():
         if not request.form['computer_ID']:
             return 'fail'
         user = Users.query.filter(Users.computer_ID==rf['computer_ID']).first()
-        comp = Computers.query.filter(Computers.computer_ID==rf['computer_ID']).first()
+        comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
         if (user is None) or (comp is None) or (user.username != session['user']):
             return 'fail'
         user.computer_ID = 0
@@ -141,6 +146,7 @@ def deleteReservation():
         comp.reservaion_end_time = 0
         comp.availability = 1
         db.session.commit()
+        return 'ok'
     except Exception as e:
         print("Error with client removing reservation")
         print("----------------")
