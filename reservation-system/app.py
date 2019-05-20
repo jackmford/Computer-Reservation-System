@@ -2,6 +2,7 @@ from flask import abort, Flask, json, redirect,\
     render_template, request, Response, url_for, session, jsonify
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
+from _thread import start_new_thread
 import time
 import os
 
@@ -14,6 +15,31 @@ db = SQLAlchemy(app)
 
 # Import any SQLAlchemy model classes you wish.
 from models import Users, Computers
+
+"""
+UPDATE db in 30 second intervals
+"""
+def updateDB():
+    while True:
+        try:
+            computers = Computers.query.filter(Computers.availability==0).all()
+            t = time.time()
+            for computer in computers:
+                if computer.reservation_end_time <= t:
+                    user = Users.query.filter(Users.username==computer.reserved_by).first()
+                    user.computer_ID=0
+                    computer.availability = 1
+                    computer.checkout_time = 0
+                    computer.reservation_end_time = 0
+                    computer.reserved_by = ''
+            db.session.commit()
+        except Exception as e:
+            print("Error with updating db")
+            print("----------------")
+            print(e)
+            print("----------------")
+        time.sleep(30)
+    return
 
 """
 VALIDATORS
@@ -35,7 +61,7 @@ def validReserve(rf):
     if not (session['user'] and rf['computer_ID'] and rf['reservation_time']):
         return False
     #make sure they sent a valid time
-    elif rf['reservation_time'] not in [2,4,12,24]:
+    elif int(rf['reservation_time']) not in [2,4,12,24]:
         return False
 
     #check that the user does not already have a computer reserved
@@ -47,7 +73,7 @@ def validReserve(rf):
             return False
 
     #check if the computer the user wants is already reserved
-    comp = Computers.query.filter(Computers.computer_ID==rf['computer_ID']).first()
+    comp = Computers.query.filter(Computers.computer_ID==int(rf['computer_ID'])).first()
     if (comp is None):
         return False
     elif comp.availability == 0:
@@ -143,17 +169,20 @@ def reserve():
         #grab the user and computer from the db
         user = Users.query.filter(Users.username==session['user']).first()
         comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
+        resTime = int(request.form['reservation_time'])
+        compID = int(request.form['computer_ID'])
 
         #figure out how long for the reservation
-        #time is hours * 60min/hr * 60sec/min
+        #time for addTime is hours * 60min/hr * 60sec/min
         t=time.time()
-        addTime = request.form['reservation_time'] * 60 * 60
+        addTime = resTime * 60 * 60
         addTime = addTime + t
 
-        user.computer_ID = request.form['computer_ID']
+        user.computer_ID = compID
         comp.availability = 0
         comp.checkout_time = t
         comp.reservation_end_time = addTime
+        comp.reserved_by = user.username
         db.session.commit()
         return 'ok'
     except Exception as e:
@@ -170,12 +199,18 @@ def deleteReservation():
             return 'fail'
         user = Users.query.filter(Users.computer_ID==rf['computer_ID']).first()
         comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
+
+        #check if there exists a user with that c_ID
+        #check that the user is the same one as the one who is logged in
         if (user is None) or (comp is None) or (user.username != session['user']):
             return 'fail'
+
+        #update info
         user.computer_ID = 0
         comp.checkout_time = 0
         comp.reservaion_end_time = 0
         comp.availability = 1
+        comp.reserved_by = ''
         db.session.commit()
         return 'ok'
     except Exception as e:
@@ -187,4 +222,5 @@ def deleteReservation():
 
 	
 if __name__ == '__main__':
-	app.run()
+    start_new_thread(updateDB, ())
+    app.run()
