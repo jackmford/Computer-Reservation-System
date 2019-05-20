@@ -26,7 +26,7 @@ def updateDB():
             t = time.time()
             for computer in computers:
                 if computer.reservation_end_time <= t:
-                    user = Users.query.filter(Users.email==computer.reserved_by).first()
+                    user = Users.query.filter(Users.username==computer.reserved_by).first()
                     user.computer_ID=0
                     computer.availability = 1
                     computer.checkout_time = 0
@@ -180,7 +180,7 @@ def reserve():
         comp.availability = 0
         comp.checkout_time = t
         comp.reservation_end_time = addTime
-        comp.reserved_by = user.email
+        comp.reserved_by = user.username
         db.session.commit()
         return 'ok'
     except Exception as e:
