@@ -2,6 +2,7 @@ from flask import abort, Flask, json, redirect,\
     render_template, request, Response, url_for, session, jsonify
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
+import time
 import os
 
 app = Flask(__name__)
@@ -30,14 +31,34 @@ def validLogin(rf):
         return False
 
 def validReserve(rf):
-    if not (rf['computer_ID'] and rf['checkout_time'] and rf['reservation_end_time']):
+    #make sure they have the form data
+    if not (session['user'] and rf['computer_ID'] and rf['reservation_time']):
         return False
+    #make sure they sent a valid time
+    elif rf['reservation_time'] not in [2,4,12,24]:
+        return False
+
+    #check that the user does not already have a computer reserved
+    user = Users.query.filter(Users.username==session['user']).first()
+    t=time.time()
+    if user.computer_ID != 0:
+        comp = Computers.query.filter(Computers.computer_ID==user.computer_ID).first()
+        if comp.reservation_end_time > t:
+            return False
+
+    #check if the computer the user wants is already reserved
     comp = Computers.query.filter(Computers.computer_ID==rf['computer_ID']).first()
-    if (comp is None) or comp.availability == 0:
-        #TODO if availability is false, check if the reservation end time has passed
+    if (comp is None):
         return False
+    elif comp.availability == 0:
+        if comp.reservation_end_time <= t:
+            return True
+        else:
+            return False
     else:
         return True
+
+
 """
 ROUTES TO GO TO
 """
@@ -110,20 +131,24 @@ def info():
 
 @app.route('/api/reserve/')
 def reserve():
-    if not session['user'] or not validReserve(request.form):
+    if not validReserve(request.form):
         return 'fail'
     try:
-        #grab the user from the db
-        username = session['user']
-        user = Users.query.filter(Users.username==username).first()
+        #grab the user and computer from the db
+        user = Users.query.filter(Users.username==session['user']).first()
+        comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
 
-        #check that the user doesn't already have a computer
-        if user.computer_ID != 0:
-            return 'fail'
-        user.computer_ID = request.form[computer_ID]
-        #TODO
-        #change computer availability, checkout_time and reservation_end_time
-        #add and commit db changes
+        #figure out how long for the reservation
+        #time is hours * 60min/hr * 60sec/min
+        t=time.time()
+        addTime = request.form['reservation_time'] * 60 * 60
+        addTime = addTime + t
+
+        user.computer_ID = request.form['computer_ID']
+        comp.availability = 0
+        comp.checkout_time = t
+        comp.reservation_end_time = addTime
+        db.session.commit()
         return 'ok'
     except Exception as e:
         print("Error with client reserving computer")
