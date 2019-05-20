@@ -2,18 +2,66 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: 'Corben', Georgia, Times, serif;
 	text-shadow: 1px 1px 1px #ccc;
 }
+h6 { 
+	padding-top: 15px;
+}
+#homepage {
+	text-align: center;
+}
+
+#title {
+	color: #4da6ff;
+}
+.username {
+	padding-top: 15px;
+	border: 2px solid black;
+	margin-top: 5px;
+	background: linear-gradient(21deg, #10abff, #1beabd);
+	border-radius: 9999em;
+	text-align: center;
+}
+.password {
+	padding-top: 15px;
+	border: 2px solid black;
+	margin-top: 5px;
+	background: linear-gradient(21deg, #10abff, #1beabd);
+	border-radius: 9999em;
+	text-align: center;
+}
+.email{
+	padding-top: 15px;
+	border: 2px solid black;
+	margin-top: 5px;
+	background: linear-gradient(21deg, #10abff, #1beabd);
+	border-radius: 9999em;
+	text-align: center;
+}
+
+.icon {
+	width:150px;
+	height:125px;
+
+}
+
+input::placeholder {
+	text-align: center;
+}
 p, div {
 	font-family: 'Nobile', Helvetica, Arial, sans-serif;
 }
 
 body {
-	background: url(img/cream_dust.png) repeat 0 0;
+	background-color: lightblue;
 	height: 100%;
 }
 
-button {
+.signButton {
 	height: 25px;
 	width: 100px;
 	background-color: #4da6ff;
 	text-align: center;
+	margin-top: 10px;
+	cursor: pointer;
+	border: none;
+	border-radius: 9999em;
 }
