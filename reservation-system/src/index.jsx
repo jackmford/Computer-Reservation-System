@@ -24,7 +24,7 @@ class ComputerView extends React.Component{
     constructor(props){
       super(props);
       this.state = {
-		user: super.username,
+		computer_ID: null,
 		computers: [],
 		chosenComputer: null,
 		};
@@ -33,17 +33,26 @@ class ComputerView extends React.Component{
 				method: 'POST',
 		}).then(response => response.json())
 		  .then(data => {
-		    console.log(data);
 		    this.setState({
 				computers: data,
+		    });
+		})
+		  .catch(error => alert('error'));
+		
+		window.fetch('/api/user/',{
+				method: 'POST',
+		}).then(response => response.json())
+		  .then(data => {
+		    this.setState({
+				computer_ID: data,
 		    });
 		})
 		  .catch(error => alert('error'));
     }
 
     render(){
-		console.log(this.state.computers);
 		let pcs = [];
+		console.log(this.state.computer_ID);
 		return(
 		  <div className="computerview">
 		    {this.state.computers.map((computer, index) => (
