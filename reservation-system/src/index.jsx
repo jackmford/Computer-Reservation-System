@@ -79,6 +79,14 @@ class ComputerView extends React.Component{
 		        <div>Computer ID: {computer.computer_ID}</div>
 		        <div>Computer Checkout Time: {computer.checkout_time}</div>
 		        <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+							<input type="button" value="Open" onClick={() => this.showModal()} />
+                <Modal visible={this.state.show} width="400" height="300" effect="fadeInUp" onClickAway={() => this.hideModal()}>
+                    <div>
+                        <h1>Title</h1>
+                        <p>Some Contents</p>
+												<input type="button" value="Reserve" onClick={() => this.hideModal()} />
+                    </div>
+                </Modal>
               </div>)
              } else {
               pcs.push(<div className="takencomputer">
@@ -86,6 +94,15 @@ class ComputerView extends React.Component{
 		        <div>Computer ID: {computer.computer_ID}</div>
 		        <div>Computer Checkout Time: {computer.checkout_time}</div>
 		        <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+						<input type="button" value="Open" onClick={() => this.showModal()} />
+                <Modal visible={this.state.show} width="400" height="300" effect="fadeInUp" onClickAway={() => this.hideModal()}>
+                    <div>
+                        <h1>Title</h1>
+                        <p>Some Contents</p>
+												<input type="button" value="Reserve" onClick={() => this.hideModal()} />
+			
+                    </div>
+                </Modal>
               </div>)
              }
 	      } else {
@@ -94,6 +111,14 @@ class ComputerView extends React.Component{
 		      <div>Computer ID: {computer.computer_ID}</div>
 		      <div>Computer Checkout Time: {computer.checkout_time}</div>
 		      <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+					<input type="button" value="Open" onClick={() => this.showModal()} />
+                <Modal visible={this.state.show} width="400" height="300" effect="fadeInUp" onClickAway={() => this.hideModal()}>
+                    <div>
+                        <h1>Title</h1>
+                        <p>Some Contents</p>
+												<input type="button" value="Reserve" onClick={() => this.hideModal()} />
+                    </div>
+                </Modal>
 		      </div>)
 		  }
 	    });

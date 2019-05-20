@@ -76,6 +76,7 @@ body {
   flex-direction: column;
   text-align: center;
   justify-content: space-evenly;
+	cursor: pointer;
 }
 
 .takencomputer{
@@ -108,4 +109,5 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+	justify-content: center;
 }
