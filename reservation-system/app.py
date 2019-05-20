@@ -61,7 +61,7 @@ def validReserve(rf):
     if not (session['user'] and rf['computer_ID'] and rf['reservation_time']):
         return False
     #make sure they sent a valid time
-    elif rf['reservation_time'] not in [2,4,12,24]:
+    elif int(rf['reservation_time']) not in [2,4,12,24]:
         return False
 
     #check that the user does not already have a computer reserved
@@ -73,7 +73,7 @@ def validReserve(rf):
             return False
 
     #check if the computer the user wants is already reserved
-    comp = Computers.query.filter(Computers.computer_ID==rf['computer_ID']).first()
+    comp = Computers.query.filter(Computers.computer_ID==int(rf['computer_ID'])).first()
     if (comp is None):
         return False
     elif comp.availability == 0:
@@ -169,14 +169,16 @@ def reserve():
         #grab the user and computer from the db
         user = Users.query.filter(Users.username==session['user']).first()
         comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
+        resTime = int(request.form['reservation_time'])
+        compID = int(request.form['computer_ID'])
 
         #figure out how long for the reservation
         #time for addTime is hours * 60min/hr * 60sec/min
         t=time.time()
-        addTime = request.form['reservation_time'] * 60 * 60
+        addTime = resTime * 60 * 60
         addTime = addTime + t
 
-        user.computer_ID = request.form['computer_ID']
+        user.computer_ID = compID
         comp.availability = 0
         comp.checkout_time = t
         comp.reservation_end_time = addTime
