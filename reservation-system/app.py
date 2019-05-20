@@ -87,7 +87,7 @@ def login():
 	 
 @app.route('/api/computerInfo/', methods=['POST'])
 def info():
-    computers = Computers.query.filter().all()
+    computers = list(map(lambda c: c.serialize(), Computers.query.all()))
     return jsonify(computers)
     
 

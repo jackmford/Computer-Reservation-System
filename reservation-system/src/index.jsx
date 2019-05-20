@@ -2,6 +2,63 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+class ComputerReservation extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {
+		computer: super.chosenComputer,
+		times: [],
+		};
+    }
+    
+    render(){
+		return(
+		  <div className="homepage">
+		  </div>
+		);
+    }
+
+}
+
+class ComputerView extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {
+		user: super.username,
+		computers: [],
+		chosenComputer: null,
+		};
+
+		window.fetch('/api/computerInfo/',{
+				method: 'POST',
+		}).then(response => response.json())
+		  .then(data => {
+		    console.log(data);
+		    this.setState({
+				computers: data,
+		    });
+		})
+		  .catch(error => alert('error'));
+    }
+
+    render(){
+		console.log(this.state.computers);
+		let pcs = [];
+		return(
+		  <div className="computerview">
+		    {this.state.computers.map((computer, index) => (
+		      <div className="computer">
+			    <div>Computer Availability: {computer.availability}</div>
+		    	<div>Computer ID: {computer.computer_ID}</div>
+		    	<div>Computer Checkout Time: {computer.checkout_time}</div>
+		    	<div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+		      </div>
+            ))}
+		  </div>
+		);
+    }
+}
+
 class Login extends React.Component {
     constructor(props){
       super(props);
