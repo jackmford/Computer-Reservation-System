@@ -26,6 +26,7 @@ class Computers(db.Model):
     availability = db.Column(db.Integer)
     checkout_time = db.Column(db.Integer)
     reservation_end_time = db.Column(db.Integer)
+    reserved_by = db.Column(db.String())
 
     def serialize(self):
         return{
@@ -33,6 +34,7 @@ class Computers(db.Model):
             'availability': self.availability,
             'checkout_time': self.checkout_time,
             'reservation_end_time': self.reservation_end_time,
+            'reserved_by': self.reserved_by,
 
         }
 
