@@ -2,6 +2,7 @@ from flask import abort, Flask, json, redirect,\
     render_template, request, Response, url_for, session, jsonify
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
+from _thread import start_new_thread
 import time
 import os
 
@@ -14,6 +15,31 @@ db = SQLAlchemy(app)
 
 # Import any SQLAlchemy model classes you wish.
 from models import Users, Computers
+
+"""
+UPDATE db in 30 second intervals
+"""
+def updateDB():
+    while True:
+        try:
+            computers = Computers.query.filter(Computers.availability==0).all()
+            t = time.time()
+            for computer in computers:
+                if computer.reservation_end_time <= t:
+                    user = Users.query.filter(Users.email==computer.reserved_by).first()
+                    user.computer_ID=0
+                    computer.availability = 1
+                    computer.checkout_time = 0
+                    computer.reservation_end_time = 0
+                    computer.reserved_by = ''
+            db.session.commit()
+        except Exception as e:
+            print("Error with updating db")
+            print("----------------")
+            print(e)
+            print("----------------")
+        time.sleep(30)
+    return
 
 """
 VALIDATORS
@@ -194,4 +220,5 @@ def deleteReservation():
 
 	
 if __name__ == '__main__':
-	app.run()
+    start_new_thread(updateDB, ())
+    app.run()
