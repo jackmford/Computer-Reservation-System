@@ -161,7 +161,7 @@ def user():
     return str(userCompID)
     
 
-@app.route('/api/reserve/')
+@app.route('/api/reserve/'), methods=['POST']
 def reserve():
     if not validReserve(request.form):
         return 'fail'
@@ -192,7 +192,7 @@ def reserve():
         print("----------------")
         return 'fail'
 
-@app.route('/api/deleteReservation/')
+@app.route('/api/deleteReservation/'), methods=['POST']
 def deleteReservation():
     try:
         if not request.form['computer_ID']:
