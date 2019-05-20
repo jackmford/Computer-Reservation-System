@@ -66,11 +66,35 @@ body {
 	border-radius: 9999em;
 }
 
-.computer{
+.freecomputer{
   height: 300px;
   width: 300px;
   border: 2px solid;
   background: green;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-evenly;
+}
+
+.takencomputer{
+  height: 300px;
+  width: 300px;
+  border: 2px solid;
+  background: red;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-evenly;
+}
+
+.mycomputer{
+  height: 300px;
+  width: 300px;
+  border: 2px solid;
+  background: yellow;
   padding: 10px;
   display: flex;
   flex-direction: column;

@@ -26,7 +26,7 @@ class ComputerView extends React.Component{
     constructor(props){
       super(props);
       this.state = {
-		user: super.username,
+		computer_ID: null,
 		computers: [],
 		chosenComputer: null,
 		show: false,
@@ -36,9 +36,18 @@ class ComputerView extends React.Component{
 				method: 'POST',
 		}).then(response => response.json())
 		  .then(data => {
-		    console.log(data);
 		    this.setState({
 				computers: data,
+		    });
+		})
+		  .catch(error => alert('error'));
+		
+		window.fetch('/api/user/',{
+				method: 'POST',
+		}).then(response => response.json())
+		  .then(data => {
+		    this.setState({
+				computer_ID: data,
 		    });
 		})
 		  .catch(error => alert('error'));
@@ -54,26 +63,43 @@ class ComputerView extends React.Component{
 		}
 
     render(){
-		console.log(this.state.computers);
 		let pcs = [];
+		
+	    this.state.computers.map((computer, index) => {
+		//this is really bad because im just changing the color for now.
+        //If the computer id is equal to the userID then its reserved by them
+        //So they will be able to update their reservation or remove their reservation.
+
+		//If the computer availability is 1 then it is free so it can be reserved by anybody
+		//if not then it is reserved so we will display it as such and with who reserved it.
+	      if(computer.computer_ID !== this.state.computer_ID){
+		    if(computer.availability === 1) {
+              pcs.push(<div className="freecomputer">
+		        <div>Computer Availability: {computer.availability}</div>
+		        <div>Computer ID: {computer.computer_ID}</div>
+		        <div>Computer Checkout Time: {computer.checkout_time}</div>
+		        <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+              </div>)
+             } else {
+              pcs.push(<div className="takencomputer">
+		        <div>Computer Availability: {computer.availability}</div>
+		        <div>Computer ID: {computer.computer_ID}</div>
+		        <div>Computer Checkout Time: {computer.checkout_time}</div>
+		        <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+              </div>)
+             }
+	      } else {
+            pcs.push(<div className="mycomputer">
+		      <div>Computer Availability: {computer.availability}</div>
+		      <div>Computer ID: {computer.computer_ID}</div>
+		      <div>Computer Checkout Time: {computer.checkout_time}</div>
+		      <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+		      </div>)
+		  }
+	    });
 		return(
 		  <div className="computerview">
-		    {this.state.computers.map((computer, index) => (
-		      <div className="computer">
-			    <div>Computer Availability: {computer.availability}</div>
-		    	<div>Computer ID: {computer.computer_ID}</div>
-		    	<div>Computer Checkout Time: {computer.checkout_time}</div>
-		    	<div>Computer Reservation End Time: {computer.reservation_end_time}</div>
-					<input type="button" value="Make Reservation" onClick={() => this.showModal()} />
-					<Modal visible={this.state.show} width="400" height="300" effect="fadeInUp" onClickAway={() => this.hideModal()}>
-						<div>
-							<h1>Title</h1>
-							<p>something</p>
-					 		<input type="button" value="Reserve" onClick={() => this.hideModal()} />
-						</div>
-					</Modal>
-		      </div>
-            ))}
+		    {pcs}
 		  </div>
 		);
     }

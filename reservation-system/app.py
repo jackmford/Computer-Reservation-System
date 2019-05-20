@@ -127,6 +127,12 @@ def logout():
 def info():
     computers = list(map(lambda c: c.serialize(), Computers.query.all()))
     return jsonify(computers)
+
+@app.route('/api/user/', methods=['POST'])
+def user():
+    user = Users.query.filter(Users.username==session['user']).first()
+    userCompID = user.computer_ID
+    return str(userCompID)
     
 
 @app.route('/api/reserve/')
