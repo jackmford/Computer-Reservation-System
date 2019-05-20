@@ -58,6 +58,8 @@ def validLogin(rf):
 
 def validReserve(rf):
     #make sure they have the form data
+    print(rf['computer_ID'])
+    print(rf['reservation_time'])
     if not (session['user'] and rf['computer_ID'] and rf['reservation_time']):
         return False
     #make sure they sent a valid time
@@ -161,8 +163,9 @@ def user():
     return str(userCompID)
     
 
-@app.route('/api/reserve/')
+@app.route('/api/reserve/', methods=['POST'])
 def reserve():
+    print(request.form)
     if not validReserve(request.form):
         return 'fail'
     try:
