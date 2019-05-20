@@ -76,6 +76,7 @@ body {
   flex-direction: column;
   text-align: center;
   justify-content: space-evenly;
+	cursor: pointer;
 }
 
 .computerview{
@@ -84,4 +85,5 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+	justify-content: center;
 }
