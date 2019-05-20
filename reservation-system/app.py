@@ -50,8 +50,10 @@ def validLogin(rf):
     if not rf['user'] or not rf['pass']:
         return False
     #check username and password in database
-    p = Users.query.filter(Users.username == rf['user']).first()
-    if p is not None and p.password == rf['pass']:
+    username = rf['user'].strip().lower()
+    password = rf['pass'].strip()
+    p = Users.query.filter(Users.username == username).first()
+    if p is not None and p.password == password:
         return True
     else:
         return False
@@ -126,7 +128,8 @@ def login():
     try:
         if validLogin(request.form):
             #they are authenticated
-            session['user']=request.form['user']
+            user = request.form['user'].strip().lower()
+            session['user']=user
             return 'ok'
         else:
             #invalid login
