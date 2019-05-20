@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import Modal from 'react-awesome-modal';
 
 class ComputerReservation extends React.Component{
     constructor(props){
@@ -20,6 +21,7 @@ class ComputerReservation extends React.Component{
 
 }
 
+
 class ComputerView extends React.Component{
     constructor(props){
       super(props);
@@ -27,6 +29,7 @@ class ComputerView extends React.Component{
 		computer_ID: null,
 		computers: [],
 		chosenComputer: null,
+		show: false,
 		};
 
 		window.fetch('/api/computerInfo/',{
@@ -49,6 +52,15 @@ class ComputerView extends React.Component{
 		})
 		  .catch(error => alert('error'));
     }
+		showModal(){
+			console.log('showing modal');
+			this.setState({show: true});
+		}
+
+		hideModal(){
+			console.log('closing modal');
+			this.setState({show: false});
+		}
 
     render(){
 		let pcs = [];
