@@ -75,7 +75,8 @@ def signUp():
     #send new user data to the database
     #take data from the request form, add it to database and commit it
     #should check if username is already taken? 
-    if not rf['user'] or not rf['pass']:
+    rf = request.form
+    if not (rf['user'] and rf['pass'] and rf['email']):
         return 'fail'
 
     username = request.form['user'].strip().lower()
@@ -86,12 +87,11 @@ def signUp():
     else:
         #getting data to add to the user profile database
         password = request.form['pass'].strip()
-        #creating unique profile picture name for the picture they gave us
         #add data to this user
         newUser = Users(username=username, password=password, computer_ID = 0, email=request.form['email'])
         db.session.add(newUser)
         db.session.commit()
-        session['user'] = request.form['user']
+        session['user'] = username
         return 'ok'
 
 
