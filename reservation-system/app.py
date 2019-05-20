@@ -197,8 +197,10 @@ def deleteReservation():
     try:
         if not request.form['computer_ID']:
             return 'fail'
-        user = Users.query.filter(Users.computer_ID==rf['computer_ID']).first()
-        comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
+
+        compID = int(request.form['computer_ID'])
+        user = Users.query.filter(Users.computer_ID==compID).first()
+        comp = Computers.query.filter(Computers.computer_ID==compID).first()
 
         #check if there exists a user with that c_ID
         #check that the user is the same one as the one who is logged in
