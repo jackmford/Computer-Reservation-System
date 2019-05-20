@@ -145,7 +145,7 @@ def reserve():
         comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
 
         #figure out how long for the reservation
-        #time is hours * 60min/hr * 60sec/min
+        #time for addTime is hours * 60min/hr * 60sec/min
         t=time.time()
         addTime = request.form['reservation_time'] * 60 * 60
         addTime = addTime + t
@@ -154,6 +154,7 @@ def reserve():
         comp.availability = 0
         comp.checkout_time = t
         comp.reservation_end_time = addTime
+        comp.reserved_by = user.email
         db.session.commit()
         return 'ok'
     except Exception as e:
@@ -170,12 +171,18 @@ def deleteReservation():
             return 'fail'
         user = Users.query.filter(Users.computer_ID==rf['computer_ID']).first()
         comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
+
+        #check if there exists a user with that c_ID
+        #check that the user is the same one as the one who is logged in
         if (user is None) or (comp is None) or (user.username != session['user']):
             return 'fail'
+
+        #update info
         user.computer_ID = 0
         comp.checkout_time = 0
         comp.reservaion_end_time = 0
         comp.availability = 1
+        comp.reserved_by = ''
         db.session.commit()
         return 'ok'
     except Exception as e:
