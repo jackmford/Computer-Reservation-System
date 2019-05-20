@@ -151,7 +151,8 @@ def logout():
 	 
 @app.route('/api/computerInfo/', methods=['POST'])
 def info():
-    computers = list(map(lambda c: c.serialize(), Computers.query.all()))
+    comps = Computers.query.order_by(Computers.computer_ID).all()
+    computers = list(map(lambda c: c.serialize(), comps))
     return jsonify(computers)
 
 @app.route('/api/user/', methods=['POST'])
