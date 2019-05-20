@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import Modal from 'react-awesome-modal';
 
 class ComputerReservation extends React.Component{
     constructor(props){
@@ -20,6 +21,7 @@ class ComputerReservation extends React.Component{
 
 }
 
+
 class ComputerView extends React.Component{
     constructor(props){
       super(props);
@@ -27,6 +29,7 @@ class ComputerView extends React.Component{
 		user: super.username,
 		computers: [],
 		chosenComputer: null,
+		show: false,
 		};
 
 		window.fetch('/api/computerInfo/',{
@@ -40,6 +43,15 @@ class ComputerView extends React.Component{
 		})
 		  .catch(error => alert('error'));
     }
+		showModal(){
+			console.log('showing modal');
+			this.setState({show: true});
+		}
+
+		hideModal(){
+			console.log('closing modal');
+			this.setState({show: false});
+		}
 
     render(){
 		console.log(this.state.computers);
@@ -52,6 +64,14 @@ class ComputerView extends React.Component{
 		    	<div>Computer ID: {computer.computer_ID}</div>
 		    	<div>Computer Checkout Time: {computer.checkout_time}</div>
 		    	<div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+					<input type="button" value="Make Reservation" onClick={() => this.showModal()} />
+					<Modal visible={this.state.show} width="400" height="300" effect="fadeInUp" onClickAway={() => this.hideModal()}>
+						<div>
+							<h1>Title</h1>
+							<p>something</p>
+					 		<input type="button" value="Reserve" onClick={() => this.hideModal()} />
+						</div>
+					</Modal>
 		      </div>
             ))}
 		  </div>
