@@ -52,17 +52,42 @@ class ComputerView extends React.Component{
 
     render(){
 		let pcs = [];
-		console.log(this.state.computer_ID);
+		
+	    this.state.computers.map((computer, index) => {
+		//this is really bad because im just changing the color for now.
+        //If the computer id is equal to the userID then its reserved by them
+        //So they will be able to update their reservation or remove their reservation.
+
+		//If the computer availability is 1 then it is free so it can be reserved by anybody
+		//if not then it is reserved so we will display it as such and with who reserved it.
+	      if(computer.computer_ID !== this.state.computer_ID){
+		    if(computer.availability === 1) {
+              pcs.push(<div className="freecomputer">
+		        <div>Computer Availability: {computer.availability}</div>
+		        <div>Computer ID: {computer.computer_ID}</div>
+		        <div>Computer Checkout Time: {computer.checkout_time}</div>
+		        <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+              </div>)
+             } else {
+              pcs.push(<div className="takencomputer">
+		        <div>Computer Availability: {computer.availability}</div>
+		        <div>Computer ID: {computer.computer_ID}</div>
+		        <div>Computer Checkout Time: {computer.checkout_time}</div>
+		        <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+              </div>)
+             }
+	      } else {
+            pcs.push(<div className="mycomputer">
+		      <div>Computer Availability: {computer.availability}</div>
+		      <div>Computer ID: {computer.computer_ID}</div>
+		      <div>Computer Checkout Time: {computer.checkout_time}</div>
+		      <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
+		      </div>)
+		  }
+	    });
 		return(
 		  <div className="computerview">
-		    {this.state.computers.map((computer, index) => (
-		      <div className="computer">
-			    <div>Computer Availability: {computer.availability}</div>
-		    	<div>Computer ID: {computer.computer_ID}</div>
-		    	<div>Computer Checkout Time: {computer.checkout_time}</div>
-		    	<div>Computer Reservation End Time: {computer.reservation_end_time}</div>
-		      </div>
-            ))}
+		    {pcs}
 		  </div>
 		);
     }
