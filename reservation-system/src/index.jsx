@@ -65,7 +65,7 @@ class ComputerView extends React.Component{
 		})
 		  .catch(error => alert('error'));
 
-			setTimeout(this.getComputerInfo, 5000);
+			setTimeout(this.getComputerInfo, 30000);
 		}
 		}
 
