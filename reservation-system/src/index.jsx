@@ -34,25 +34,8 @@ class ComputerView extends React.Component{
 		show: false,
 		};
 
-		window.fetch('/api/computerInfo/',{
-				method: 'POST',
-		}).then(response => response.json())
-		  .then(data => {
-		    this.setState({
-				computers: data,
-		    });
-		})
-		  .catch(error => alert('error'));
-		
-		window.fetch('/api/user/',{
-				method: 'POST',
-		}).then(response => response.json())
-		  .then(data => {
-		    this.setState({
-				computer_ID: data,
-		    });
-		})
-		  .catch(error => alert('error'));
+			this.getComputerInfo = this.getComputerInfo.bind(this);
+			this.getComputerInfo();
     }
 
 		getComputerInfo(){
@@ -76,6 +59,8 @@ class ComputerView extends React.Component{
 		    });
 		})
 		  .catch(error => alert('error'));
+
+		setTimeout(this.getComputerInfo, 30000);
 		}
 
 /*
