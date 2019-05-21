@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from _thread import start_new_thread
 import time
+from datetime import datetime
+from datetime import timedelta
 import os
 
 app = Flask(__name__)
@@ -60,6 +62,8 @@ def validLogin(rf):
 
 def validReserve(rf):
     #make sure they have the form data
+    print(rf['computer_ID'])
+    print(rf['reservation_time'])
     if not (session['user'] and rf['computer_ID'] and rf['reservation_time']):
         return False
     #make sure they sent a valid time
@@ -167,6 +171,7 @@ def user():
 
 @app.route('/api/reserve/', methods=['POST'])
 def reserve():
+    print(request.form)
     if not validReserve(request.form):
         return 'fail'
     try:
@@ -175,6 +180,7 @@ def reserve():
         comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
         resTime = int(request.form['reservation_time'])
         compID = int(request.form['computer_ID'])
+        
 
         #figure out how long for the reservation
         #time for addTime is hours * 60min/hr * 60sec/min
@@ -214,7 +220,7 @@ def deleteReservation():
         #update info
         user.computer_ID = 0
         comp.checkout_time = 0
-        comp.reservaion_end_time = 0
+        comp.reservation_end_time = 0
         comp.availability = 1
         comp.reserved_by = ''
         db.session.commit()
