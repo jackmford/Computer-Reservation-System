@@ -53,7 +53,7 @@ class ComputerView extends React.Component{
 					computers: data,
 		    	});
 			})
-		  .catch(error => alert('error'));
+		  .catch(error => console.log("didn't repull data"));
 
 		window.fetch('/api/user/',{
 				method: 'POST',
@@ -63,9 +63,9 @@ class ComputerView extends React.Component{
 				computer_ID: data,
 		    });
 		})
-		  .catch(error => alert('error'));
+		  .catch(error => console.log("didn't repull data"));
 
-			setTimeout(this.getComputerInfo, 5000);
+			setTimeout(this.getComputerInfo, 30000);
 		}
 		}
 
