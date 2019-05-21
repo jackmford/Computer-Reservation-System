@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from _thread import start_new_thread
 import time
+from datetime import datetime
+from datetime import timedelta
 import os
 
 app = Flask(__name__)
@@ -175,6 +177,7 @@ def reserve():
         comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
         resTime = int(request.form['reservation_time'])
         compID = int(request.form['computer_ID'])
+        
 
         #figure out how long for the reservation
         #time for addTime is hours * 60min/hr * 60sec/min
@@ -196,7 +199,7 @@ def reserve():
         print("----------------")
         return 'fail'
 
-@app.route('/api/deleteReservation/'), methods=['POST']
+@app.route('/api/deleteReservation/', methods=['POST'])
 def deleteReservation():
     try:
         if not request.form['computer_ID']:
@@ -214,7 +217,7 @@ def deleteReservation():
         #update info
         user.computer_ID = 0
         comp.checkout_time = 0
-        comp.reservaion_end_time = 0
+        comp.reservation_end_time = 0
         comp.availability = 1
         comp.reserved_by = ''
         db.session.commit()

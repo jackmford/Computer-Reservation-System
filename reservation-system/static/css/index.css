@@ -7,13 +7,15 @@ h6 {
 }
 #homepage {
 	text-align: center;
+	position: relative;
 }
 
 #title {
 	color: #4da6ff;
 }
 .username {
-	padding-top: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	border: 2px solid black;
 	margin-top: 5px;
 	background: linear-gradient(21deg, #10abff, #1beabd);
@@ -21,7 +23,8 @@ h6 {
 	text-align: center;
 }
 .password {
-	padding-top: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	border: 2px solid black;
 	margin-top: 5px;
 	background: linear-gradient(21deg, #10abff, #1beabd);
@@ -29,7 +32,8 @@ h6 {
 	text-align: center;
 }
 .email{
-	padding-top: 15px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	border: 2px solid black;
 	margin-top: 5px;
 	background: linear-gradient(21deg, #10abff, #1beabd);
@@ -51,7 +55,11 @@ p, div {
 }
 
 body {
-	background-color: lightblue;
+	height: 100%;
+	background: #ccf2ff;
+}
+
+html {
 	height: 100%;
 }
 
@@ -66,25 +74,47 @@ body {
 	border-radius: 9999em;
 }
 
+.removeBtn {
+	border-radius: 9999em;
+	border: none;
+	height:30px;
+	cursor: pointer;
+}
+
+.logoutBtn {
+	height: 35px;
+	width: 100px;
+	background-color: #4da6ff;
+	text-align: center;
+	margin-top: 15px;
+	margin-right: 15px;
+	cursor: pointer;
+	border: none;
+	border-radius: 9999em;
+}
+
 .freecomputer{
   height: 300px;
   width: 300px;
-  border: 2px solid;
-  background: green;
+	border: none;
+  background: #99ff99;
   padding: 10px;
+	margin: 5px;
+	border-radius: 2em;
   display: flex;
   flex-direction: column;
   text-align: center;
   justify-content: space-evenly;
-	cursor: pointer;
 }
 
 .takencomputer{
   height: 300px;
   width: 300px;
-  border: 2px solid;
-  background: red;
+	border: none;
+  background: #ff6666;
   padding: 10px;
+	margin: 5px;
+	border-radius: 2em;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -94,9 +124,11 @@ body {
 .mycomputer{
   height: 300px;
   width: 300px;
-  border: 2px solid;
-  background: yellow;
+	border: none;
+  background: #ffffcc;
   padding: 10px;
+	margin: 5px;
+	border-radius: 2em;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -106,8 +138,34 @@ body {
 .computerview{
   
   padding: 30px;
+	padding-top: 80px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 	justify-content: center;
+}
+
+.reservationBtn {
+	height: 35px;
+	width: 200px;
+	background-color: #4da6ff;
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 15px;
+	cursor: pointer;
+	border: none;
+	border-radius: 9999em;
+}
+
+#reservation-form {
+	margin-top: 55px;
+
+}
+#logoutIcon{
+	height: 50px;
+	width: 75px;
+}
+#logDiv {
+	position: absolute;
+	float: 0;
 }
