@@ -3,6 +3,7 @@ from flask import abort, Flask, json, redirect,\
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from _thread import start_new_thread
+import threading
 import time
 from datetime import datetime
 from datetime import timedelta
@@ -19,29 +20,26 @@ db = SQLAlchemy(app)
 from models import Users, Computers
 
 """
-UPDATE db in 30 second intervals
+UPDATE DB
 """
 def updateDB():
-    while True:
-        try:
-            computers = Computers.query.filter(Computers.availability==0).all()
-            t = time.time()
-            for computer in computers:
-                if computer.reservation_end_time <= t:
-                    user = Users.query.filter(Users.username==computer.reserved_by).first()
-                    user.computer_ID=0
-                    computer.availability = 1
-                    computer.checkout_time = 0
-                    computer.reservation_end_time = 0
-                    computer.reserved_by = ''
-            db.session.commit()
-        except Exception as e:
-            print("Error with updating db")
-            print("----------------")
-            print(e)
-            print("----------------")
-        time.sleep(30)
-    return
+    try:
+        computers = Computers.query.filter(Computers.availability==0).all()
+        t = time.time()
+        for computer in computers:
+            if computer.reservation_end_time <= t:
+                user = Users.query.filter(Users.username==computer.reserved_by).first()
+                user.computer_ID=0
+                computer.availability = 1
+                computer.checkout_time = 0
+                computer.reservation_end_time = 0
+                computer.reserved_by = ''
+        db.session.commit()
+    except Exception as e:
+        print("Error with updating db")
+        print("----------------")
+        print(e)
+        print("----------------")
 
 """
 VALIDATORS
@@ -158,6 +156,7 @@ def logout():
 	 
 @app.route('/api/computerInfo/', methods=['POST'])
 def info():
+    updateDB()
     comps = Computers.query.order_by(Computers.computer_ID).all()
     computers = list(map(lambda c: c.serialize(), comps))
     return jsonify(computers)
@@ -234,5 +233,4 @@ def deleteReservation():
 
 	
 if __name__ == '__main__':
-    start_new_thread(updateDB, ())
     app.run()
