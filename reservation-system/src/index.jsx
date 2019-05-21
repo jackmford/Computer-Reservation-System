@@ -32,13 +32,18 @@ class ComputerView extends React.Component{
 		chosenComputer: null,
 		clickedID: null,
 		show: false,
+		timer: true,
 		};
-
+			
+			
 			this.getComputerInfo = this.getComputerInfo.bind(this);
 			this.getComputerInfo();
     }
 
 		getComputerInfo(){
+
+		console.log(this.state.timer);
+		if(this.state.timer === true){
 			console.log('rerendering');
 			window.fetch('/api/computerInfo/',{
 					method: 'POST',
@@ -60,36 +65,10 @@ class ComputerView extends React.Component{
 		})
 		  .catch(error => alert('error'));
 
-		setTimeout(this.getComputerInfo, 30000);
+			setTimeout(this.getComputerInfo, 5000);
+		}
 		}
 
-/*
-		setTimeout(() => {
-			window.fetch('/api/computerInfo/',{
-					method: 'POST',
-			}).then(response => response.json())
-		  	.then(data => {
-		    	this.setState({
-					computers: data,
-		    	});
-			})
-		  .catch(error => alert('error'));
-
-		window.fetch('/api/user/',{
-				method: 'POST',
-		}).then(response => response.json())
-		  .then(data => {
-		    this.setState({
-				computer_ID: data,
-		    });
-		})
-		  .catch(error => alert('error'));
-			rerender = setTimeout(r, 1000);
-	
-			}.bind(this), 1000);
-*/
-		
-	
 
 		showModal(){
 			console.log('showing modal');
@@ -172,6 +151,10 @@ class ComputerView extends React.Component{
 		
 		logout() {
 			
+			console.log('setting to false')
+			this.setState({
+				timer: false,
+			});
 			window.fetch('/api/logout/',{
 				method: 'POST',
 			})
