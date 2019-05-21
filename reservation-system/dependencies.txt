@@ -1,0 +1,4 @@
+npm install --save react-timeout
+npm install i -S react-awesome-modal
+import ReactTimeout from 'react-timeout'
+import Modal from 'react-awesome-modal';

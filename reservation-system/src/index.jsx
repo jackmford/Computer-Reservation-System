@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import Modal from 'react-awesome-modal';
+import ReactTimeout from 'react-timeout'
 
 class ComputerReservation extends React.Component{
     constructor(props){
@@ -29,19 +30,31 @@ class ComputerView extends React.Component{
 		computer_ID: null,
 		computers: [],
 		chosenComputer: null,
+		clickedID: null,
 		show: false,
+		timer: true,
 		};
+			
+			
+			this.getComputerInfo = this.getComputerInfo.bind(this);
+			this.getComputerInfo();
+    }
 
-		window.fetch('/api/computerInfo/',{
-				method: 'POST',
-		}).then(response => response.json())
-		  .then(data => {
-		    this.setState({
-				computers: data,
-		    });
-		})
-		  .catch(error => alert('error'));
-		
+		getComputerInfo(){
+
+		console.log(this.state.timer);
+		if(this.state.timer === true){
+			console.log('rerendering');
+			window.fetch('/api/computerInfo/',{
+					method: 'POST',
+			}).then(response => response.json())
+		  	.then(data => {
+		    	this.setState({
+					computers: data,
+		    	});
+			})
+		  .catch(error => console.log("didn't repull data"));
+
 		window.fetch('/api/user/',{
 				method: 'POST',
 		}).then(response => response.json())
@@ -50,8 +63,13 @@ class ComputerView extends React.Component{
 				computer_ID: data,
 		    });
 		})
-		  .catch(error => alert('error'));
-    }
+		  .catch(error => console.log("didn't repull data"));
+
+			setTimeout(this.getComputerInfo, 30000);
+		}
+		}
+
+
 		showModal(){
 			console.log('showing modal');
 			this.setState({show: true});
@@ -62,70 +80,291 @@ class ComputerView extends React.Component{
 			this.setState({show: false});
 		}
 
-    render(){
-		let pcs = [];
-		
-	    this.state.computers.map((computer, index) => {
-		//this is really bad because im just changing the color for now.
-        //If the computer id is equal to the userID then its reserved by them
-        //So they will be able to update their reservation or remove their reservation.
-
-		//If the computer availability is 1 then it is free so it can be reserved by anybody
-		//if not then it is reserved so we will display it as such and with who reserved it.
-	      if(computer.computer_ID !== this.state.computer_ID){
-		    if(computer.availability === 1) {
-              pcs.push(<div className="freecomputer">
-		        <div>Computer Availability: {computer.availability}</div>
-		        <div>Computer ID: {computer.computer_ID}</div>
-		        <div>Computer Checkout Time: {computer.checkout_time}</div>
-		        <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
-							<input type="button" value="Open" onClick={() => this.showModal()} />
-                <Modal visible={this.state.show} width="400" height="300" effect="fadeInUp" onClickAway={() => this.hideModal()}>
-                    <div>
-                        <h1>Title</h1>
-                        <p>Some Contents</p>
-												<input type="button" value="Reserve" onClick={() => this.hideModal()} />
-                    </div>
-                </Modal>
-              </div>)
-             } else {
-              pcs.push(<div className="takencomputer">
-		        <div>Computer Availability: {computer.availability}</div>
-		        <div>Computer ID: {computer.computer_ID}</div>
-		        <div>Computer Checkout Time: {computer.checkout_time}</div>
-		        <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
-						<input type="button" value="Open" onClick={() => this.showModal()} />
-                <Modal visible={this.state.show} width="400" height="300" effect="fadeInUp" onClickAway={() => this.hideModal()}>
-                    <div>
-                        <h1>Title</h1>
-                        <p>Some Contents</p>
-												<input type="button" value="Reserve" onClick={() => this.hideModal()} />
+		reserve() {
+			var formData = new FormData();
+			var h = '#';
+			var c = document.querySelector('#reservation-computer').value;
+			console.log('reservation computer');
+			console.log(c);
+			var time = document.querySelector('#reservation-time').value;
+			console.log('reservation time');
+			console.log(time);
 			
-                    </div>
-                </Modal>
+			formData.append('computer_ID', c);
+			formData.append('reservation_time', time);
+			
+			for (var value of formData.values()){
+				console.log(value);
+			}
+			for (var key of formData.keys()){
+				console.log(key);
+			}
+			
+			window.fetch('/api/reserve/',{
+				method: 'POST',
+				body: formData,
+			})
+			.then(result => result.text())
+			.then(
+				(result) => {
+					if (result === 'ok'){
+						//update here 
+						this.getComputerInfo();
+				}
+					else {
+						alert('Reservation not available');
+				}
+			},
+				(error) => {
+					alert('General reservation error.');
+				},
+	
+			);
+			
+		}
+
+		remove() {
+			var formData = new FormData();
+			formData.append('computer_ID', this.state.computer_ID);
+			console.log('deleting');
+			console.log(this.state.computer_ID);
+			
+			window.fetch('/api/deleteReservation/',{
+				method: 'POST',
+				body: formData,
+			})
+			.then(result => result.text())
+			.then(
+				(result) => {
+					if (result === 'ok'){
+						this.getComputerInfo();
+					}
+					else {
+						alert('Deletion not availabe.');
+					}
+			},
+				(error) => {
+					alert('General delete error.');
+				},
+			);
+		}
+		
+		logout() {
+			
+			console.log('setting to false')
+			this.setState({
+				timer: false,
+			});
+			window.fetch('/api/logout/',{
+				method: 'POST',
+			})
+			.then(result => result.text())
+			.then(
+				(result) => {
+					if (result === 'ok'){
+						this.props.onLogout();
+				}
+					else {
+						alert('Not deleted.');
+				}
+			},
+				(error) => {
+					alert('General logout error.');
+				},
+	
+			);
+
+      this.setState({
+        username: '',
+        password: '',
+      });
+    }
+
+    render(){
+		let pcs1 = [];
+		let pcs2 = [];
+		let btn = [];
+		let log = [];
+
+	    this.state.computers.map((computer, index) => {
+			console.log(computer.computer_ID);
+
+				if(computer.computer_ID < 5){	
+		    if(computer.availability === 1) {
+              pcs1.push(
+								<div className="freecomputer">
+		        		<div>Available</div>
+		        		<div>Computer ID: {computer.computer_ID}</div>
+		        		<div>Computer Checkout Time: {computer.checkout_time}</div>
+		        		<div>Reservation End Time: {computer.reservation_end_time}</div>
               </div>)
+             } 
+							else if (computer.computer_ID === this.state.computer_ID) {
+						
+						//calculating actual hours instead of seconds like in app.py
+						var d = new Date(computer.checkout_time*1000);
+						var hours = d.getHours();
+						var minutes = "0" + d.getMinutes();
+						var seconds = "0" + d.getSeconds();
+						var t = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+						console.log(t)
+						var de = new Date(computer.reservation_end_time*1000);
+						var deHours = de.getHours();
+						var deMin = "0" + de.getMinutes();
+						var deSec = "0" + de.getSeconds();
+						var te = deHours + ":" + deMin.substr(-2) + ":" + deSec.substr(-2);
+						console.log(te)
+
+            pcs1.push(
+							<div className="mycomputer">
+		      		<div>Reserved</div>
+		      		<div>Computer ID: {computer.computer_ID}</div>
+		      		<div>Computer Checkout Time: {t}</div>
+		      		<div>Reservation End Time: {te}</div>
+							<div>Reserved by: {computer.reserved_by} </div>
+							<input className="removeBtn" type="button" value="End Reservation" onClick={() => this.remove()} />
+		      	</div>)
+						
+								
+							}
+							else {
+
+							//calculating actual hours instead of seconds like in app.py
+							var d = new Date(computer.checkout_time*1000);
+							var hours = d.getHours();
+							var minutes = "0" + d.getMinutes();
+							var seconds = "0" + d.getSeconds();
+							var t = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+							console.log(t)
+							var de = new Date(computer.reservation_end_time*1000);
+							var deHours = de.getHours();
+							var deMin = "0" + de.getMinutes();
+							var deSec = "0" + de.getSeconds();
+							var te = deHours + ":" + deMin.substr(-2) + ":" + deSec.substr(-2);
+							console.log(te)
+
+              pcs1.push(<div className="takencomputer">
+		        	<div>Reserved</div>
+		      		<div>Computer ID: {computer.computer_ID}</div>
+		        	<div>Computer Checkout Time: {t}</div>
+		        	<div>Reservation End Time: {te}</div>
+							<div>Reserved by: {computer.reserved_by} </div>
+             </div>)
              }
-	      } else {
-            pcs.push(<div className="mycomputer">
-		      <div>Computer Availability: {computer.availability}</div>
-		      <div>Computer ID: {computer.computer_ID}</div>
-		      <div>Computer Checkout Time: {computer.checkout_time}</div>
-		      <div>Computer Reservation End Time: {computer.reservation_end_time}</div>
-					<input type="button" value="Open" onClick={() => this.showModal()} />
-                <Modal visible={this.state.show} width="400" height="300" effect="fadeInUp" onClickAway={() => this.hideModal()}>
+				}
+				else{
+		    if(computer.availability === 1) {
+              pcs2.push(
+								<div className="freecomputer">
+		        		<div>Available</div>
+		        		<div>Computer ID: {computer.computer_ID}</div>
+		        		<div>Computer Checkout Time: {computer.checkout_time}</div>
+		        		<div>Reservation End Time: {computer.reservation_end_time}</div>
+              </div>)
+             } 
+							else if (computer.computer_ID === this.state.computer_ID) {
+						
+						//calculating actual hours instead of seconds like in app.py
+						var d = new Date(computer.checkout_time*1000);
+						var hours = d.getHours();
+						var minutes = "0" + d.getMinutes();
+						var seconds = "0" + d.getSeconds();
+						var t = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+						console.log(t)
+						var de = new Date(computer.reservation_end_time*1000);
+						var deHours = de.getHours();
+						var deMin = "0" + de.getMinutes();
+						var deSec = "0" + de.getSeconds();
+						var te = deHours + ":" + deMin.substr(-2) + ":" + deSec.substr(-2);
+						console.log(te)
+
+            pcs2.push(
+							<div className="mycomputer">
+		      		<div>Reserved</div>
+		      		<div>Computer ID: {computer.computer_ID}</div>
+		      		<div>Computer Checkout Time: {t}</div>
+		      		<div>Reservation End Time: {te}</div>
+							<div>Reserved by: {computer.reserved_by} </div>
+							<input className="removeBtn" type="button" value="End Reservation" onClick={() => this.remove()} />
+		      	</div>)
+								
+							}
+							else {
+
+							//calculating actual hours instead of seconds like in app.py
+							var d = new Date(computer.checkout_time*1000);
+							var hours = d.getHours();
+							var minutes = "0" + d.getMinutes();
+							var seconds = "0" + d.getSeconds();
+							var t = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+							console.log(t)
+							var de = new Date(computer.reservation_end_time*1000);
+							var deHours = de.getHours();
+							var deMin = "0" + de.getMinutes();
+							var deSec = "0" + de.getSeconds();
+							var te = deHours + ":" + deMin.substr(-2) + ":" + deSec.substr(-2);
+							console.log(te)
+
+              pcs2.push(<div className="takencomputer">
+		        	<div>Reserved</div>
+		      		<div>Computer ID: {computer.computer_ID}</div>
+		        	<div>Computer Checkout Time: {t}</div>
+		        	<div>Reservation End Time: {te}</div>
+							<div>Reserved by: {computer.reserved_by} </div>
+             </div>)
+             }
+				}
+	    });
+		btn.push(<div className="reserveBtn">
+							<input className="reservationBtn" type="button" value="Make Reservation" onClick={() => this.showModal()} />
+								<br></br>
+                <Modal className="mod" visible={this.state.show} width="400" height="300" effect="fadeInUp" onClickAway={() => this.hideModal()}>
                     <div>
-                        <h1>Title</h1>
-                        <p>Some Contents</p>
-												<input type="button" value="Reserve" onClick={() => this.hideModal()} />
+											<form id="reservation-form">
+												<h6>Reservation Length</h6>
+												<select id="reservation-time" name="reservation_time">
+													<option value="2">2 Hours</option>
+													<option value="4">4 Hours</option>
+													<option value="12">12 Hours</option>
+													<option value="24">24 Hours</option>
+												</select>
+												<br></br>
+												<h6>Computer ID</h6>
+												<select id="reservation-computer">
+													<option value="1">1</option>
+													<option value="2">2</option>
+													<option value="3">3</option>
+													<option value="4">4</option>
+													<option value="5">5</option>
+													<option value="6">6</option>
+													<option value="7">7</option>
+													<option value="8">8</option>
+												</select>
+												<br></br>
+												<input className="reservationBtn" type="button" value="Reserve" onClick={() =>{ this.reserve(); this.hideModal();}} />
+											</form>
                     </div>
                 </Modal>
-		      </div>)
-		  }
-	    });
+							</div>)
+
+		log.push(
+				<div id="logDiv">
+					<img src="../static/img/transparent-computer-screen.png" alt="computerSreen" id="logoutIcon"></img>
+					<input className="logoutBtn" type="button" value="Logout" onClick={() => this.logout()} />
+				</div>)
 		return(
-		  <div className="computerview">
-		    {pcs}
-		  </div>
+			<div>
+				{log}
+		  	<div className="computerview">
+					<div className="row1">
+		    		{pcs1}
+					</div>
+					<div className="row2">
+						{pcs2}
+					</div>
+		  	</div>
+				{btn}
+			</div>
 		);
     }
 }
@@ -266,10 +505,16 @@ class App extends React.Component {
 		});
 	}
 	
+	onLogout() {
+		this.setState({
+			view: 'login'
+		});
+	}
+	
 	render() {
 		let component = (this.state.view === 'login')
 			? <Login onLogin={() => this.onLogin()} />
-			: <ComputerView />;
+			: <ComputerView onLogout={() => this.onLogout()} />;
 		
 		return(
 			<div className="app">

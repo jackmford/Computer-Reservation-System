@@ -2,7 +2,11 @@ from flask import abort, Flask, json, redirect,\
     render_template, request, Response, url_for, session, jsonify
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
+from _thread import start_new_thread
+import threading
 import time
+from datetime import datetime
+from datetime import timedelta
 import os
 
 app = Flask(__name__)
@@ -16,6 +20,28 @@ db = SQLAlchemy(app)
 from models import Users, Computers
 
 """
+UPDATE DB
+"""
+def updateDB():
+    try:
+        computers = Computers.query.filter(Computers.availability==0).all()
+        t = time.time()
+        for computer in computers:
+            if computer.reservation_end_time <= t:
+                user = Users.query.filter(Users.username==computer.reserved_by).first()
+                user.computer_ID=0
+                computer.availability = 1
+                computer.checkout_time = 0
+                computer.reservation_end_time = 0
+                computer.reserved_by = ''
+        db.session.commit()
+    except Exception as e:
+        print("Error with updating db")
+        print("----------------")
+        print(e)
+        print("----------------")
+
+"""
 VALIDATORS
 """
 # validate login information/request
@@ -24,18 +50,22 @@ def validLogin(rf):
     if not rf['user'] or not rf['pass']:
         return False
     #check username and password in database
-    p = Users.query.filter(Users.username == rf['user']).first()
-    if p is not None and p.password == rf['pass']:
+    username = rf['user'].strip().lower()
+    password = rf['pass'].strip()
+    p = Users.query.filter(Users.username == username).first()
+    if p is not None and p.password == password:
         return True
     else:
         return False
 
 def validReserve(rf):
     #make sure they have the form data
+    print(rf['computer_ID'])
+    print(rf['reservation_time'])
     if not (session['user'] and rf['computer_ID'] and rf['reservation_time']):
         return False
     #make sure they sent a valid time
-    elif rf['reservation_time'] not in [2,4,12,24]:
+    elif int(rf['reservation_time']) not in [2,4,12,24]:
         return False
 
     #check that the user does not already have a computer reserved
@@ -47,7 +77,7 @@ def validReserve(rf):
             return False
 
     #check if the computer the user wants is already reserved
-    comp = Computers.query.filter(Computers.computer_ID==rf['computer_ID']).first()
+    comp = Computers.query.filter(Computers.computer_ID==int(rf['computer_ID'])).first()
     if (comp is None):
         return False
     elif comp.availability == 0:
@@ -100,7 +130,8 @@ def login():
     try:
         if validLogin(request.form):
             #they are authenticated
-            session['user']=request.form['user']
+            user = request.form['user'].strip().lower()
+            session['user']=user
             return 'ok'
         else:
             #invalid login
@@ -125,7 +156,9 @@ def logout():
 	 
 @app.route('/api/computerInfo/', methods=['POST'])
 def info():
-    computers = list(map(lambda c: c.serialize(), Computers.query.all()))
+    updateDB()
+    comps = Computers.query.order_by(Computers.computer_ID).all()
+    computers = list(map(lambda c: c.serialize(), comps))
     return jsonify(computers)
 
 @app.route('/api/user/', methods=['POST'])
@@ -135,25 +168,30 @@ def user():
     return str(userCompID)
     
 
-@app.route('/api/reserve/')
+@app.route('/api/reserve/', methods=['POST'])
 def reserve():
+    print(request.form)
     if not validReserve(request.form):
         return 'fail'
     try:
         #grab the user and computer from the db
         user = Users.query.filter(Users.username==session['user']).first()
         comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
+        resTime = int(request.form['reservation_time'])
+        compID = int(request.form['computer_ID'])
+        
 
         #figure out how long for the reservation
-        #time is hours * 60min/hr * 60sec/min
+        #time for addTime is hours * 60min/hr * 60sec/min
         t=time.time()
-        addTime = request.form['reservation_time'] * 60 * 60
+        addTime = resTime * 60 * 60
         addTime = addTime + t
 
-        user.computer_ID = request.form['computer_ID']
+        user.computer_ID = compID
         comp.availability = 0
         comp.checkout_time = t
         comp.reservation_end_time = addTime
+        comp.reserved_by = user.username
         db.session.commit()
         return 'ok'
     except Exception as e:
@@ -163,19 +201,27 @@ def reserve():
         print("----------------")
         return 'fail'
 
-@app.route('/api/deleteReservation/')
+@app.route('/api/deleteReservation/', methods=['POST'])
 def deleteReservation():
     try:
         if not request.form['computer_ID']:
             return 'fail'
-        user = Users.query.filter(Users.computer_ID==rf['computer_ID']).first()
-        comp = Computers.query.filter(Computers.computer_ID==request.form['computer_ID']).first()
+
+        compID = int(request.form['computer_ID'])
+        user = Users.query.filter(Users.computer_ID==compID).first()
+        comp = Computers.query.filter(Computers.computer_ID==compID).first()
+
+        #check if there exists a user with that c_ID
+        #check that the user is the same one as the one who is logged in
         if (user is None) or (comp is None) or (user.username != session['user']):
             return 'fail'
+
+        #update info
         user.computer_ID = 0
         comp.checkout_time = 0
-        comp.reservaion_end_time = 0
+        comp.reservation_end_time = 0
         comp.availability = 1
+        comp.reserved_by = ''
         db.session.commit()
         return 'ok'
     except Exception as e:
@@ -187,4 +233,4 @@ def deleteReservation():
 
 	
 if __name__ == '__main__':
-	app.run()
+    app.run()
