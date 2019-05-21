@@ -181,26 +181,22 @@ class ComputerView extends React.Component{
     }
 
     render(){
-		let pcs = [];
+		let pcs1 = [];
+		let pcs2 = [];
 		let btn = [];
 		let log = [];
 
 	    this.state.computers.map((computer, index) => {
 			console.log(computer.computer_ID);
-		//this is really bad because im just changing the color for now.
-        //If the computer id is equal to the userID then its reserved by them
-        //So they will be able to update their reservation or remove their reservation.
 
-		//If the computer availability is 1 then it is free so it can be reserved by anybody
-		//if not then it is reserved so we will display it as such and with who reserved it.
-	    //  if(computer.computer_ID !== this.state.computer_ID){
-
+				if(computer.computer_ID < 5){	
 		    if(computer.availability === 1) {
-              pcs.push(<div className="freecomputer">
-		        <div>Available</div>
-		        <div>Computer ID: {computer.computer_ID}</div>
-		        <div>Computer Checkout Time: {computer.checkout_time}</div>
-		        <div>Reservation End Time: {computer.reservation_end_time}</div>
+              pcs1.push(
+								<div className="freecomputer">
+		        		<div>Available</div>
+		        		<div>Computer ID: {computer.computer_ID}</div>
+		        		<div>Computer Checkout Time: {computer.checkout_time}</div>
+		        		<div>Reservation End Time: {computer.reservation_end_time}</div>
               </div>)
              } 
 							else if (computer.computer_ID === this.state.computer_ID) {
@@ -219,14 +215,16 @@ class ComputerView extends React.Component{
 						var te = deHours + ":" + deMin.substr(-2) + ":" + deSec.substr(-2);
 						console.log(te)
 
-            pcs.push(<div className="mycomputer">
-		      <div>Reserved</div>
-		      <div>Computer ID: {computer.computer_ID}</div>
-		      <div>Computer Checkout Time: {t}</div>
-		      <div>Reservation End Time: {te}</div>
-					<div>Reserved by: {computer.reserved_by} </div>
-					<input className="removeBtn" type="button" value="End Reservation" onClick={() => this.remove()} />
-		      </div>)
+            pcs1.push(
+							<div className="mycomputer">
+		      		<div>Reserved</div>
+		      		<div>Computer ID: {computer.computer_ID}</div>
+		      		<div>Computer Checkout Time: {t}</div>
+		      		<div>Reservation End Time: {te}</div>
+							<div>Reserved by: {computer.reserved_by} </div>
+							<input className="removeBtn" type="button" value="End Reservation" onClick={() => this.remove()} />
+		      	</div>)
+						
 								
 							}
 							else {
@@ -245,14 +243,77 @@ class ComputerView extends React.Component{
 							var te = deHours + ":" + deMin.substr(-2) + ":" + deSec.substr(-2);
 							console.log(te)
 
-              pcs.push(<div className="takencomputer">
-		        <div>Reserved</div>
-		      	<div>Computer ID: {computer.computer_ID}</div>
-		        <div>Computer Checkout Time: {t}</div>
-		        <div>Reservation End Time: {te}</div>
-						<div>Reserved by: {computer.reserved_by} </div>
-              </div>)
+              pcs1.push(<div className="takencomputer">
+		        	<div>Reserved</div>
+		      		<div>Computer ID: {computer.computer_ID}</div>
+		        	<div>Computer Checkout Time: {t}</div>
+		        	<div>Reservation End Time: {te}</div>
+							<div>Reserved by: {computer.reserved_by} </div>
+             </div>)
              }
+				}
+				else{
+		    if(computer.availability === 1) {
+              pcs2.push(
+								<div className="freecomputer">
+		        		<div>Available</div>
+		        		<div>Computer ID: {computer.computer_ID}</div>
+		        		<div>Computer Checkout Time: {computer.checkout_time}</div>
+		        		<div>Reservation End Time: {computer.reservation_end_time}</div>
+              </div>)
+             } 
+							else if (computer.computer_ID === this.state.computer_ID) {
+						
+						//calculating actual hours instead of seconds like in app.py
+						var d = new Date(computer.checkout_time*1000);
+						var hours = d.getHours();
+						var minutes = "0" + d.getMinutes();
+						var seconds = "0" + d.getSeconds();
+						var t = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+						console.log(t)
+						var de = new Date(computer.reservation_end_time*1000);
+						var deHours = de.getHours();
+						var deMin = "0" + de.getMinutes();
+						var deSec = "0" + de.getSeconds();
+						var te = deHours + ":" + deMin.substr(-2) + ":" + deSec.substr(-2);
+						console.log(te)
+
+            pcs2.push(
+							<div className="mycomputer">
+		      		<div>Reserved</div>
+		      		<div>Computer ID: {computer.computer_ID}</div>
+		      		<div>Computer Checkout Time: {t}</div>
+		      		<div>Reservation End Time: {te}</div>
+							<div>Reserved by: {computer.reserved_by} </div>
+							<input className="removeBtn" type="button" value="End Reservation" onClick={() => this.remove()} />
+		      	</div>)
+								
+							}
+							else {
+
+							//calculating actual hours instead of seconds like in app.py
+							var d = new Date(computer.checkout_time*1000);
+							var hours = d.getHours();
+							var minutes = "0" + d.getMinutes();
+							var seconds = "0" + d.getSeconds();
+							var t = hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+							console.log(t)
+							var de = new Date(computer.reservation_end_time*1000);
+							var deHours = de.getHours();
+							var deMin = "0" + de.getMinutes();
+							var deSec = "0" + de.getSeconds();
+							var te = deHours + ":" + deMin.substr(-2) + ":" + deSec.substr(-2);
+							console.log(te)
+
+              pcs2.push(<div className="takencomputer">
+		        	<div>Reserved</div>
+		      		<div>Computer ID: {computer.computer_ID}</div>
+		        	<div>Computer Checkout Time: {t}</div>
+		        	<div>Reservation End Time: {te}</div>
+							<div>Reserved by: {computer.reserved_by} </div>
+             </div>)
+             }
+				}
 	    });
 		btn.push(<div className="reserveBtn">
 							<input className="reservationBtn" type="button" value="Make Reservation" onClick={() => this.showModal()} />
@@ -295,7 +356,12 @@ class ComputerView extends React.Component{
 			<div>
 				{log}
 		  	<div className="computerview">
-		    	{pcs}
+					<div className="row1">
+		    		{pcs1}
+					</div>
+					<div className="row2">
+						{pcs2}
+					</div>
 		  	</div>
 				{btn}
 			</div>

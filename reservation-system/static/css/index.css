@@ -137,8 +137,22 @@ html {
 
 .computerview{
   
-  padding: 30px;
+}
+
+.row1{
 	padding-top: 80px;
+  padding-right: 30px;
+  padding-left: 30px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+	justify-content: center;
+}
+
+.row2{
+  padding-right: 30px;
+  padding-left: 30px;
+  padding-bottom: 30px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
