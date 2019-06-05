@@ -1,2 +1,2 @@
 # Reservation-System
-A web application to see which computers in a computer lab are reserved for use.
+A Flask and React based web application that allows users to reserve computers in a computer lab and view which computers are or are not available.
